@@ -46,7 +46,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         void bind(int movie) {
             //listItemMovieView.setImage("movie");
-            Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(listItemMovieView);
+            //Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(listItemMovieView);
+            Picasso.get().load("http://image.tmdb.org/t/p/original//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(listItemMovieView);
+            //https://www.google.com/url?q=http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg&sa=D&ust=1556116031164000
             //listItemMovieView.setImageResource(R.mipmap.ic_launcher);
         }
     }
