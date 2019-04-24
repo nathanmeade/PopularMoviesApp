@@ -6,7 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -34,15 +37,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder {
-        TextView listItemMovieView;
+        ImageView listItemMovieView;
 
         public MovieViewHolder(View view) {
             super(view);
-            listItemMovieView = view.findViewById(R.id.text_view);
+            listItemMovieView = view.findViewById(R.id.image_view);
         }
 
         void bind(int movie) {
-            listItemMovieView.setText("movie");
+            //listItemMovieView.setImage("movie");
+            Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(listItemMovieView);
+            //listItemMovieView.setImageResource(R.mipmap.ic_launcher);
         }
     }
 }
