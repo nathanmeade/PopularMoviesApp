@@ -1,5 +1,6 @@
 package com.example.popularmoviesapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private String url;
     private ImageView imageView;
     private String urlFromTextView;
+    private boolean popular;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +55,44 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image_view);
         apiKey = BuildConfig.ApiKey;
         //textView.setText(apiKey);
-        baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
+        //popular = false;
+        if (!popular){
+            baseUrl = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
+        }
+        else {
+            baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
+        }
         url = baseUrl + apiKey;
         new FetchTitleTask().execute(url);
         //textView.setText(url);
         //urlFromTextView = textView.getText().toString();
 
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.most_popular:
+                popular = true;
+                baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
+                url = baseUrl + apiKey;
+                new FetchTitleTask().execute(url);
+                return true;
+            case R.id.top_rated:
+                popular = false;
+                baseUrl = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
+                url = baseUrl + apiKey;
+                new FetchTitleTask().execute(url);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
