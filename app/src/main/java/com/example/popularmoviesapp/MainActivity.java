@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private String jsonResponse;
     private String baseUrl;
     private String url;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recyclerViewAdapter);*/
 
         textView = findViewById(R.id.text);
+        imageView = findViewById(R.id.image_view);
         apiKey = BuildConfig.ApiKey;
         //textView.setText(apiKey);
         baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
@@ -109,8 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray("results");
                 jsonObject2 = jsonArray.getJSONObject(0);
-                title = jsonObject2.getString("title");
+                title = jsonObject2.getString("poster_path");
                 textView.setText(title);
+                Picasso.get().load("http://image.tmdb.org/t/p/original//" + title).into(imageView);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
