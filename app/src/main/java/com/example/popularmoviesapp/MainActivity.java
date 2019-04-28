@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -110,16 +111,20 @@ public class MainActivity extends AppCompatActivity {
             JSONArray jsonArray;
             JSONObject jsonObject2;
             String title;
+            ArrayList<String> titles = new ArrayList<String>();
             try {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray("results");
-                jsonObject2 = jsonArray.getJSONObject(0);
-                //title = jsonObject2.getString("poster_path");
-                //title = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
-                title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
-                        //textView.setText(title);
-                //Picasso.get().load("http://image.tmdb.org/t/p/original//" + title).into(imageView);
-                recyclerViewAdapter = new RecyclerViewAdapter(title);
+                for (int i=0; i<jsonArray.length(); i++){
+                    jsonObject2 = jsonArray.getJSONObject(i);
+                    title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
+                    titles.add(title);
+                }
+
+/*                jsonObject2 = jsonArray.getJSONObject(0);
+                title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");*/
+
+                recyclerViewAdapter = new RecyclerViewAdapter(titles);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             } catch (JSONException e) {

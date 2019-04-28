@@ -10,10 +10,12 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder> {
-    private String url2;
-    public RecyclerViewAdapter(String url) {
-        url2 = url;
+    private ArrayList<String> urls;
+    public RecyclerViewAdapter(ArrayList<String> urlsParameter) {
+        urls = urlsParameter;
         //url2 = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     }
 
@@ -47,7 +49,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         void bind(int movie) {
             //https://www.google.com/url?q=http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg&sa=D&ust=1556472191160000
-            Picasso.get().load(url2).into(listItemMovieView);
+            //Picasso.get().load(url2).into(listItemMovieView);
+            Picasso.get().load(urls.get(movie)).into(listItemMovieView);
             //Picasso.get().load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(listItemMovieView);
         }
     }
