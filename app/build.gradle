@@ -11,11 +11,19 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            buildConfigField 'String', "ApiKey", MyAwesomeApp_ApiKey
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "ApiKey", MyAwesomeApp_ApiKey
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {

@@ -7,11 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MovieViewHolder> {
 
@@ -27,7 +24,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        //super.onBindViewHolder(holder, position, payloads);
         holder.bind(position);
     }
 
@@ -45,11 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         void bind(int movie) {
-            //listItemMovieView.setImage("movie");
-            //Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(listItemMovieView);
             Picasso.get().load("http://image.tmdb.org/t/p/original//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(listItemMovieView);
-            //https://www.google.com/url?q=http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg&sa=D&ust=1556116031164000
-            //listItemMovieView.setImageResource(R.mipmap.ic_launcher);
         }
     }
 }
