@@ -32,18 +32,18 @@ public class MainActivity extends AppCompatActivity {
     private String baseUrl;
     private String url;
     private ImageView imageView;
+    private String urlFromTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-/*        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerViewAdapter = new RecyclerViewAdapter();
-        recyclerView.setAdapter(recyclerViewAdapter);*/
+
 
         textView = findViewById(R.id.text);
         imageView = findViewById(R.id.image_view);
@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         url = baseUrl + apiKey;
         new FetchTitleTask().execute(url);
         //textView.setText(url);
+        //urlFromTextView = textView.getText().toString();
+
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
@@ -112,9 +114,13 @@ public class MainActivity extends AppCompatActivity {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray("results");
                 jsonObject2 = jsonArray.getJSONObject(0);
-                title = jsonObject2.getString("poster_path");
-                textView.setText(title);
-                Picasso.get().load("http://image.tmdb.org/t/p/original//" + title).into(imageView);
+                //title = jsonObject2.getString("poster_path");
+                //title = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
+                title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
+                        //textView.setText(title);
+                //Picasso.get().load("http://image.tmdb.org/t/p/original//" + title).into(imageView);
+                recyclerViewAdapter = new RecyclerViewAdapter(title);
+                recyclerView.setAdapter(recyclerViewAdapter);
 
             } catch (JSONException e) {
                 e.printStackTrace();
