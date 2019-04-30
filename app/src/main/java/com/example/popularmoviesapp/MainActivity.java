@@ -78,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         Context context = this;
         Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT)
                 .show();
+        Intent intent = new Intent(this, MovieDetailsActivity.class);
+        intent.putExtra("string", weatherForDay);
+        startActivity(intent);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
