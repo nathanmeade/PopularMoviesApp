@@ -15,15 +15,17 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewAdapterViewHolder> {
     private ArrayList<String> urls;
+    private ArrayList<String> mActualTitles;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
 
     public interface RecyclerViewAdapterOnClickHandler {
-        void onClick(String weatherForDay);
+        void onClick(String weatherForDay, String actualTitle);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> urlsParameter, RecyclerViewAdapterOnClickHandler clickHandler) {
+    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, RecyclerViewAdapterOnClickHandler clickHandler) {
         urls = urlsParameter;
         mClickHandler = clickHandler;
+        mActualTitles = actualTitles;
         //url2 = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     }
 
@@ -48,8 +50,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             int adapterPosition = getAdapterPosition();
             //String weatherForDay = mWeatherData[adapterPosition];
             String weatherForDay = urls.get(adapterPosition);
+            String actualTitle = mActualTitles.get(adapterPosition);
             //weatherForDay = "test";
-            mClickHandler.onClick(weatherForDay);
+            mClickHandler.onClick(weatherForDay, actualTitle);
         }
     }
 

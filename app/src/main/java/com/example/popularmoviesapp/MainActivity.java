@@ -74,12 +74,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     @Override
-    public void onClick(String weatherForDay) {
+    public void onClick(String weatherForDay, String actualTitle) {
         Context context = this;
         Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT)
                 .show();
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra("string", weatherForDay);
+        intent.putExtra("string2", actualTitle);
         startActivity(intent);
     }
 
@@ -163,19 +164,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             JSONObject jsonObject2;
             String title;
             ArrayList<String> titles = new ArrayList<String>();
+            String actualTitle;
+            ArrayList<String> actualTitles = new ArrayList<String>();
             try {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray("results");
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject2 = jsonArray.getJSONObject(i);
                     title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
+                    actualTitle = jsonObject2.getString("original_title");
                     titles.add(title);
+                    actualTitles.add(actualTitle);
                 }
 
 /*                jsonObject2 = jsonArray.getJSONObject(0);
                 title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");*/
 
-                recyclerViewAdapter = new RecyclerViewAdapter(titles, clickHandler);
+                recyclerViewAdapter = new RecyclerViewAdapter(titles, actualTitles, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             } catch (JSONException e) {
