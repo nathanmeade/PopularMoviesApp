@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     jsonObject2 = jsonArray.getJSONObject(i);
                     title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
                     actualTitle = jsonObject2.getString("original_title");
-                    voteAverage = String.valueOf(jsonObject2.get("vote_average"));
+                    voteAverage = String.valueOf(jsonObject2.get("vote_average")) + "/10";
                     titles.add(title);
                     actualTitles.add(actualTitle);
                     voteAverages.add(voteAverage);
