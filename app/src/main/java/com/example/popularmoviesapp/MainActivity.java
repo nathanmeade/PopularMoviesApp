@@ -1,5 +1,6 @@
 package com.example.popularmoviesapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler {
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private String urlFromTextView;
     private boolean popular;
+    private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
 
+        clickHandler = this;
 
         textView = findViewById(R.id.text);
         imageView = findViewById(R.id.image_view);
@@ -67,6 +71,13 @@ public class MainActivity extends AppCompatActivity {
         //textView.setText(url);
         //urlFromTextView = textView.getText().toString();
 
+    }
+
+    @Override
+    public void onClick(String weatherForDay) {
+        Context context = this;
+        Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT)
+                .show();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -161,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 /*                jsonObject2 = jsonArray.getJSONObject(0);
                 title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");*/
 
-                recyclerViewAdapter = new RecyclerViewAdapter(titles);
+                recyclerViewAdapter = new RecyclerViewAdapter(titles, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             } catch (JSONException e) {
