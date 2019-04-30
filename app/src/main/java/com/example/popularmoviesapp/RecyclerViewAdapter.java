@@ -16,16 +16,18 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewAdapterViewHolder> {
     private ArrayList<String> urls;
     private ArrayList<String> mActualTitles;
+    private ArrayList<String> mVoteAverages;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
 
     public interface RecyclerViewAdapterOnClickHandler {
-        void onClick(String weatherForDay, String actualTitle);
+        void onClick(String weatherForDay, String actualTitle, String voteAverage);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, RecyclerViewAdapterOnClickHandler clickHandler) {
+    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, ArrayList<String> voteAverages, RecyclerViewAdapterOnClickHandler clickHandler) {
         urls = urlsParameter;
         mClickHandler = clickHandler;
         mActualTitles = actualTitles;
+        mVoteAverages = voteAverages;
         //url2 = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     }
 
@@ -51,8 +53,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             //String weatherForDay = mWeatherData[adapterPosition];
             String weatherForDay = urls.get(adapterPosition);
             String actualTitle = mActualTitles.get(adapterPosition);
+            String voteAverage = mVoteAverages.get(adapterPosition);
             //weatherForDay = "test";
-            mClickHandler.onClick(weatherForDay, actualTitle);
+            mClickHandler.onClick(weatherForDay, actualTitle, voteAverage);
         }
     }
 
