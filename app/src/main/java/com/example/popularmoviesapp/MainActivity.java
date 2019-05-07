@@ -1,22 +1,15 @@
 package com.example.popularmoviesapp;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,13 +26,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
-    private TextView textView;
     private String apiKey;
     private String jsonResponse;
     private String baseUrl;
     private String url;
-    private ImageView imageView;
-    private String urlFromTextView;
     private boolean popular;
     private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
 
@@ -48,18 +38,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerView = findViewById(R.id.recycler_view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
-
         clickHandler = this;
-
-        textView = findViewById(R.id.text);
-        imageView = findViewById(R.id.image_view);
         apiKey = BuildConfig.ApiKey;
-        //textView.setText(apiKey);
-        //popular = false;
         if (!popular){
             baseUrl = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
         }
@@ -68,20 +51,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
         url = baseUrl + apiKey;
         new FetchTitleTask().execute(url);
-        //textView.setText(url);
-        //urlFromTextView = textView.getText().toString();
-
     }
 
     @Override
-    public void onClick(String weatherForDay, String actualTitle, String voteAverage, String overview, String releaseDate) {
-        Context context = this;
-        Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT)
-                .show();
+    public void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
-        intent.putExtra("string", weatherForDay);
-        intent.putExtra("string2", actualTitle);
-        intent.putExtra("string3", voteAverage);
+        intent.putExtra("posterUrl", posterUrl);
+        intent.putExtra("title", title);
+        intent.putExtra("rating", voteAverage);
         intent.putExtra("overview", overview);
         intent.putExtra("releaseDate", releaseDate);
         startActivity(intent);
@@ -143,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         protected String doInBackground(String... strings) {
             URL url = null;
             try {
-                //Uri uri = Uri.parse("https://hoopla-ws-test.hoopladigital.com/kinds/5/titles/featured");
                 Uri uri = Uri.parse(strings[0]);
                 url = new URL(uri.toString());
 
@@ -165,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             JSONObject jsonObject;
             JSONArray jsonArray;
             JSONObject jsonObject2;
+            String posterUrl;
+            ArrayList<String> posterUrls = new ArrayList<String>();
             String title;
             ArrayList<String> titles = new ArrayList<String>();
-            String actualTitle;
-            ArrayList<String> actualTitles = new ArrayList<String>();
             String voteAverage;
             ArrayList<String> voteAverages = new ArrayList<String>();
             String overview;
@@ -180,24 +156,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 jsonArray = jsonObject.getJSONArray("results");
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject2 = jsonArray.getJSONObject(i);
-                    title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
-                    actualTitle = jsonObject2.getString("original_title");
-                    voteAverage = String.valueOf(jsonObject2.get("vote_average")) + "/10";
+                    posterUrl = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
+                    title = jsonObject2.getString("original_title");
+                    voteAverage = jsonObject2.get("vote_average") + "/10";
                     overview = jsonObject2.getString("overview");
                     releaseDate = jsonObject2.getString("release_date");
+                    posterUrls.add(posterUrl);
                     titles.add(title);
-                    actualTitles.add(actualTitle);
                     voteAverages.add(voteAverage);
                     overviews.add(overview);
                     releaseDates.add(releaseDate);
                 }
-
-/*                jsonObject2 = jsonArray.getJSONObject(0);
-                title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");*/
-
-                recyclerViewAdapter = new RecyclerViewAdapter(titles, actualTitles, voteAverages, overviews, releaseDates, clickHandler);
+                recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

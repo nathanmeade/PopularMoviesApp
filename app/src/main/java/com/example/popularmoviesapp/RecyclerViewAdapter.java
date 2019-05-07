@@ -7,61 +7,50 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewAdapterViewHolder> {
-    private ArrayList<String> urls;
-    private ArrayList<String> mActualTitles;
+    private ArrayList<String> mPosterUrls;
+    private ArrayList<String> mTitles;
     private ArrayList<String> mVoteAverages;
     private ArrayList<String> mOverviews;
     private ArrayList<String> mReleaseDates;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
 
     public interface RecyclerViewAdapterOnClickHandler {
-        void onClick(String weatherForDay, String actualTitle, String voteAverage, String overview, String releaseDate);
+        void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, RecyclerViewAdapterOnClickHandler clickHandler) {
-        urls = urlsParameter;
-        mClickHandler = clickHandler;
-        mActualTitles = actualTitles;
+    public RecyclerViewAdapter(ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, RecyclerViewAdapterOnClickHandler clickHandler) {
+        mPosterUrls = posterUrls;
+        mTitles = titles;
         mVoteAverages = voteAverages;
         mOverviews = overviews;
         mReleaseDates = releaseDates;
-        //url2 = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
+        mClickHandler = clickHandler;
     }
 
     public class RecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView mWeatherTextView;
+        public final ImageView imageView;
 
         public RecyclerViewAdapterViewHolder(View view) {
             super(view);
-            mWeatherTextView = (ImageView) view.findViewById(R.id.image_view);
-            // COMPLETED (7) Call setOnClickListener on the view passed into the constructor (use 'this' as the OnClickListener)
+            imageView = view.findViewById(R.id.image_view);
             view.setOnClickListener(this);
         }
 
-        // COMPLETED (6) Override onClick, passing the clicked day's data to mClickHandler via its onClick method
-        /**
-         * This gets called by the child views during a click.
-         *
-         * @param v The View that was clicked
-         */
         @Override
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
-            //String weatherForDay = mWeatherData[adapterPosition];
-            String weatherForDay = urls.get(adapterPosition);
-            String actualTitle = mActualTitles.get(adapterPosition);
+            String posterUrl = mPosterUrls.get(adapterPosition);
+            String title = mTitles.get(adapterPosition);
             String voteAverage = mVoteAverages.get(adapterPosition);
             String overview = mOverviews.get(adapterPosition);
             String releaseDate = mReleaseDates.get(adapterPosition);
-            //weatherForDay = "test";
-            mClickHandler.onClick(weatherForDay, actualTitle, voteAverage, overview, releaseDate);
+            mClickHandler.onClick(posterUrl, title, voteAverage, overview, releaseDate);
         }
     }
 
@@ -77,30 +66,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapterViewHolder holder, int position) {
-
-        //holder.bind(position);
-        //holder.mWeatherTextView
-        Picasso.get().load(urls.get(position)).into(holder.mWeatherTextView);
+        Picasso.get().load(mPosterUrls.get(position)).into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return urls.size();
+        return mPosterUrls.size();
     }
-
-/*    class MovieViewHolder extends RecyclerView.ViewHolder {
-        ImageView listItemMovieView;
-
-        public MovieViewHolder(View view) {
-            super(view);
-            listItemMovieView = view.findViewById(R.id.image_view);
-        }
-
-        void bind(int movie) {
-            //https://www.google.com/url?q=http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg&sa=D&ust=1556472191160000
-            //Picasso.get().load(url2).into(listItemMovieView);
-            Picasso.get().load(urls.get(movie)).into(listItemMovieView);
-            //Picasso.get().load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(listItemMovieView);
-        }
-    }*/
 }
