@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     @Override
-    public void onClick(String weatherForDay, String actualTitle, String voteAverage) {
+    public void onClick(String weatherForDay, String actualTitle, String voteAverage, String overview, String releaseDate) {
         Context context = this;
         Toast.makeText(context, weatherForDay, Toast.LENGTH_SHORT)
                 .show();
@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         intent.putExtra("string", weatherForDay);
         intent.putExtra("string2", actualTitle);
         intent.putExtra("string3", voteAverage);
+        intent.putExtra("overview", overview);
+        intent.putExtra("releaseDate", releaseDate);
         startActivity(intent);
     }
 
@@ -169,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             ArrayList<String> actualTitles = new ArrayList<String>();
             String voteAverage;
             ArrayList<String> voteAverages = new ArrayList<String>();
+            String overview;
+            ArrayList<String> overviews = new ArrayList<String>();
+            String releaseDate;
+            ArrayList<String> releaseDates = new ArrayList<String>();
             try {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray("results");
@@ -177,15 +183,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
                     actualTitle = jsonObject2.getString("original_title");
                     voteAverage = String.valueOf(jsonObject2.get("vote_average")) + "/10";
+                    overview = jsonObject2.getString("overview");
+                    releaseDate = jsonObject2.getString("release_date");
                     titles.add(title);
                     actualTitles.add(actualTitle);
                     voteAverages.add(voteAverage);
+                    overviews.add(overview);
+                    releaseDates.add(releaseDate);
                 }
 
 /*                jsonObject2 = jsonArray.getJSONObject(0);
                 title = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");*/
 
-                recyclerViewAdapter = new RecyclerViewAdapter(titles, actualTitles, voteAverages, clickHandler);
+                recyclerViewAdapter = new RecyclerViewAdapter(titles, actualTitles, voteAverages, overviews, releaseDates, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
 
             } catch (JSONException e) {

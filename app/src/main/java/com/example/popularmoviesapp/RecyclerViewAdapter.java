@@ -17,17 +17,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> urls;
     private ArrayList<String> mActualTitles;
     private ArrayList<String> mVoteAverages;
+    private ArrayList<String> mOverviews;
+    private ArrayList<String> mReleaseDates;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
 
     public interface RecyclerViewAdapterOnClickHandler {
-        void onClick(String weatherForDay, String actualTitle, String voteAverage);
+        void onClick(String weatherForDay, String actualTitle, String voteAverage, String overview, String releaseDate);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, ArrayList<String> voteAverages, RecyclerViewAdapterOnClickHandler clickHandler) {
+    public RecyclerViewAdapter(ArrayList<String> urlsParameter, ArrayList<String> actualTitles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, RecyclerViewAdapterOnClickHandler clickHandler) {
         urls = urlsParameter;
         mClickHandler = clickHandler;
         mActualTitles = actualTitles;
         mVoteAverages = voteAverages;
+        mOverviews = overviews;
+        mReleaseDates = releaseDates;
         //url2 = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     }
 
@@ -54,8 +58,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String weatherForDay = urls.get(adapterPosition);
             String actualTitle = mActualTitles.get(adapterPosition);
             String voteAverage = mVoteAverages.get(adapterPosition);
+            String overview = mOverviews.get(adapterPosition);
+            String releaseDate = mReleaseDates.get(adapterPosition);
             //weatherForDay = "test";
-            mClickHandler.onClick(weatherForDay, actualTitle, voteAverage);
+            mClickHandler.onClick(weatherForDay, actualTitle, voteAverage, overview, releaseDate);
         }
     }
 
