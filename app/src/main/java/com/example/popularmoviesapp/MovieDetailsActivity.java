@@ -35,11 +35,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             overview= null;
             releaseDate = null;
         } else {
-            posterUrl= extras.getString("posterUrl");
-            title= extras.getString("title");
-            rating= extras.getString("rating");
-            overview= extras.getString("overview");
-            releaseDate= extras.getString("releaseDate");
+            posterUrl= extras.getString(getString(R.string.poster_url_variable_name));
+            title= extras.getString(getString(R.string.title_variable_name));
+            rating= extras.getString(getString(R.string.rating_variable_name));
+            overview= extras.getString(getString(R.string.overview_variable_name));
+            releaseDate= extras.getString(getString(R.string.release_date_variable_name));
         }
         titleTextView.setText(title);
         ratingTextView.setText(rating);

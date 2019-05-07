@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         clickHandler = this;
         apiKey = BuildConfig.ApiKey;
         if (!popular){
-            baseUrl = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
+            baseUrl = getString(R.string.top_rated_base_url);
         }
         else {
-            baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
+            baseUrl = getString(R.string.popular_base_url);
         }
         url = baseUrl + apiKey;
         new FetchTitleTask().execute(url);
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
-        intent.putExtra("posterUrl", posterUrl);
-        intent.putExtra("title", title);
-        intent.putExtra("rating", voteAverage);
-        intent.putExtra("overview", overview);
-        intent.putExtra("releaseDate", releaseDate);
+        intent.putExtra(getString(R.string.poster_url_variable_name), posterUrl);
+        intent.putExtra(getString(R.string.title_variable_name), title);
+        intent.putExtra(getString(R.string.rating_variable_name), voteAverage);
+        intent.putExtra(getString(R.string.overview_variable_name), overview);
+        intent.putExtra(getString(R.string.release_date_variable_name), releaseDate);
         startActivity(intent);
     }
 
@@ -75,13 +75,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         switch (item.getItemId()) {
             case R.id.most_popular:
                 popular = true;
-                baseUrl = "http://api.themoviedb.org/3/movie/popular?api_key=";
+                baseUrl = getString(R.string.popular_base_url);
                 url = baseUrl + apiKey;
                 new FetchTitleTask().execute(url);
                 return true;
             case R.id.top_rated:
                 popular = false;
-                baseUrl = "http://api.themoviedb.org/3/movie/top_rated?api_key=";
+                baseUrl = getString(R.string.top_rated_base_url);
                 url = baseUrl + apiKey;
                 new FetchTitleTask().execute(url);
                 return true;
@@ -153,14 +153,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             ArrayList<String> releaseDates = new ArrayList<String>();
             try {
                 jsonObject = new JSONObject(string);
-                jsonArray = jsonObject.getJSONArray("results");
+                jsonArray = jsonObject.getJSONArray(getString(R.string.results));
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject2 = jsonArray.getJSONObject(i);
-                    posterUrl = "http://image.tmdb.org/t/p/original//" + jsonObject2.getString("poster_path");
-                    title = jsonObject2.getString("original_title");
-                    voteAverage = jsonObject2.get("vote_average") + "/10";
-                    overview = jsonObject2.getString("overview");
-                    releaseDate = jsonObject2.getString("release_date");
+                    posterUrl = getString(R.string.poster_base_url) + jsonObject2.getString(getString(R.string.poster_path));
+                    title = jsonObject2.getString(getString(R.string.original_title));
+                    voteAverage = jsonObject2.get(getString(R.string.vote_average)) + getString(R.string.forward_slash_ten);
+                    overview = jsonObject2.getString(getString(R.string.overview));
+                    releaseDate = jsonObject2.getString(getString(R.string.release_date));
                     posterUrls.add(posterUrl);
                     titles.add(title);
                     voteAverages.add(voteAverage);
