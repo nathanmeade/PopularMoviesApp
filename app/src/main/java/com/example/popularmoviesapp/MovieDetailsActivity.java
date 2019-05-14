@@ -34,10 +34,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView releaseDateTextView;
     private TextView movieIdTextView;
     private ImageView imageView;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerView1;
+    private RecyclerView recyclerView2;
     private ReviewsRecyclerViewAdapter reviewsRecyclerViewAdapter;
-    private String jsonResponse;
+    private TrailersRecyclerViewAdapter trailersRecyclerViewAdapter;
+    private String[] jsonResponse;
     private String url;
+    private String url2;
+    private String[] urlArray;
     private String apiKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,10 +53,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
         releaseDateTextView = findViewById(R.id.release_date);
         imageView = findViewById(R.id.image);
         movieIdTextView = findViewById(R.id.movie_id);
-        recyclerView = findViewById(R.id.recycler_view);
+        recyclerView1 = findViewById(R.id.recycler_view1);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
+        recyclerView1.setLayoutManager(linearLayoutManager);
+        recyclerView1.setHasFixedSize(true);
+        recyclerView2 = findViewById(R.id.recycler_view2);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        recyclerView2.setLayoutManager(linearLayoutManager2);
+        recyclerView2.setHasFixedSize(true);
         String posterUrl;
         String title;
         String rating;
@@ -83,7 +91,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Picasso.get().load(posterUrl).into(imageView);
         apiKey = BuildConfig.ApiKey;
         url = "http://api.themoviedb.org/3/movie/" + movieId + "/reviews?api_key=" + apiKey;
-        new FetchReviewTask().execute(url);
+        url2 = "http://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=" + apiKey;
+        urlArray = new String[2];
+        urlArray[0] = url;
+        urlArray[1] = url2;
+        new FetchReviewTask().execute(urlArray);
 
     }
 
@@ -122,25 +134,30 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
 
-    public class FetchReviewTask extends AsyncTask<String, Void, String> {
+    public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected String[] doInBackground(String... strings) {
+            jsonResponse = new String[2];
             URL url = null;
+            URL url2 = null;
             try {
                 Uri uri = Uri.parse(strings[0]);
                 url = new URL(uri.toString());
+                Uri uri2 = Uri.parse(strings[1]);
+                url2 = new URL(uri2.toString());
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                jsonResponse = getResponseFromHttpUrl(url);
+                jsonResponse[0] = getResponseFromHttpUrl(url);
+                jsonResponse[1] = getResponseFromHttpUrl(url2);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -149,7 +166,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String[] s) {
             JSONObject jsonObject;
             JSONArray jsonArray;
             JSONObject jsonObject2;
@@ -157,8 +174,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
             ArrayList<String> reviewers = new ArrayList<String>();
             String review;
             ArrayList<String> reviews = new ArrayList<String>();
+            //videos:
+            JSONObject jsonObjectTrailer;
+            JSONArray jsonArrayTrailer;
+            JSONObject jsonObjectTrailer2;
+            String key;
+            ArrayList<String> keys = new ArrayList<String>();
             try {
-                jsonObject = new JSONObject(s);
+                jsonObject = new JSONObject(s[0]);
                 jsonArray = jsonObject.getJSONArray(getString(R.string.results));
                 for (int i=0; i<jsonArray.length(); i++){
                     jsonObject2 = jsonArray.getJSONObject(i);
@@ -168,7 +191,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     reviews.add(review);
                 }
                 reviewsRecyclerViewAdapter = new ReviewsRecyclerViewAdapter(reviewers, reviews);
-                recyclerView.setAdapter(reviewsRecyclerViewAdapter);
+                recyclerView1.setAdapter(reviewsRecyclerViewAdapter);
+                //videos:
+                jsonObjectTrailer = new JSONObject(s[1]);
+                jsonArrayTrailer = jsonObjectTrailer.getJSONArray(getString(R.string.results));
+                for (int i=0; i<jsonArrayTrailer.length(); i++){
+                    jsonObjectTrailer2 = jsonArrayTrailer.getJSONObject(i);
+                    key = jsonObjectTrailer2.getString("key");
+                    keys.add(key);
+                }
+                trailersRecyclerViewAdapter = new TrailersRecyclerViewAdapter(keys);
+                recyclerView2.setAdapter(trailersRecyclerViewAdapter);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
