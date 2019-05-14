@@ -54,12 +54,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     @Override
-    public void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate) {
+    public void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         intent.putExtra(getString(R.string.poster_url_variable_name), posterUrl);
         intent.putExtra(getString(R.string.title_variable_name), title);
         intent.putExtra(getString(R.string.rating_variable_name), voteAverage);
         intent.putExtra(getString(R.string.overview_variable_name), overview);
+        intent.putExtra("movieId", movieId);
         intent.putExtra(getString(R.string.release_date_variable_name), releaseDate);
         startActivity(intent);
     }
@@ -151,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             ArrayList<String> overviews = new ArrayList<String>();
             String releaseDate;
             ArrayList<String> releaseDates = new ArrayList<String>();
+            String movieId;
+            ArrayList<String> movieIds = new ArrayList<String>();
             try {
                 jsonObject = new JSONObject(string);
                 jsonArray = jsonObject.getJSONArray(getString(R.string.results));
@@ -161,13 +164,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     voteAverage = jsonObject2.get(getString(R.string.vote_average)) + getString(R.string.forward_slash_ten);
                     overview = jsonObject2.getString(getString(R.string.overview));
                     releaseDate = jsonObject2.getString(getString(R.string.release_date));
+                    movieId = jsonObject2.get("id").toString();
                     posterUrls.add(posterUrl);
                     titles.add(title);
                     voteAverages.add(voteAverage);
                     overviews.add(overview);
                     releaseDates.add(releaseDate);
+                    movieIds.add(movieId);
                 }
-                recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, clickHandler);
+                recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
             } catch (JSONException e) {
                 e.printStackTrace();

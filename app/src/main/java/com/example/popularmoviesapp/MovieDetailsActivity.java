@@ -17,6 +17,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView ratingTextView;
     private TextView overviewTextView;
     private TextView releaseDateTextView;
+    private TextView movieIdTextView;
     private ImageView imageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +28,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         overviewTextView = findViewById(R.id.overview);
         releaseDateTextView = findViewById(R.id.release_date);
         imageView = findViewById(R.id.image);
+        movieIdTextView = findViewById(R.id.movie_id);
         String posterUrl;
         String title;
         String rating;
         String overview;
         String releaseDate;
+        String movieId;
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             posterUrl= null;
@@ -39,17 +42,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
             rating= null;
             overview= null;
             releaseDate = null;
+            movieId = null;
         } else {
             posterUrl= extras.getString(getString(R.string.poster_url_variable_name));
             title= extras.getString(getString(R.string.title_variable_name));
             rating= extras.getString(getString(R.string.rating_variable_name));
             overview= extras.getString(getString(R.string.overview_variable_name));
             releaseDate= extras.getString(getString(R.string.release_date_variable_name));
+            movieId= extras.getString("movieId");
         }
         titleTextView.setText(title);
         ratingTextView.setText(rating);
         overviewTextView.setText(overview);
         releaseDateTextView.setText(releaseDate);
+        movieIdTextView.setText(movieId);
         Picasso.get().load(posterUrl).into(imageView);
     }
 

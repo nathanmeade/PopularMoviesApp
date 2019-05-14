@@ -18,18 +18,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mVoteAverages;
     private ArrayList<String> mOverviews;
     private ArrayList<String> mReleaseDates;
+    private ArrayList<String> mMovieIds;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
 
     public interface RecyclerViewAdapterOnClickHandler {
-        void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate);
+        void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, RecyclerViewAdapterOnClickHandler clickHandler) {
+    public RecyclerViewAdapter(ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, ArrayList<String> movieIds, RecyclerViewAdapterOnClickHandler clickHandler) {
         mPosterUrls = posterUrls;
         mTitles = titles;
         mVoteAverages = voteAverages;
         mOverviews = overviews;
         mReleaseDates = releaseDates;
+        mMovieIds = movieIds;
         mClickHandler = clickHandler;
     }
 
@@ -50,7 +52,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String voteAverage = mVoteAverages.get(adapterPosition);
             String overview = mOverviews.get(adapterPosition);
             String releaseDate = mReleaseDates.get(adapterPosition);
-            mClickHandler.onClick(posterUrl, title, voteAverage, overview, releaseDate);
+            String movieId = mMovieIds.get(adapterPosition);
+            mClickHandler.onClick(posterUrl, title, voteAverage, overview, releaseDate, movieId);
         }
     }
 
