@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler {
@@ -86,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 url = baseUrl + apiKey;
                 new FetchTitleTask().execute(url);
                 return true;
+            case R.id.favorites:
+                new FetchTitleTask().execute(getString(R.string.favorites));
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -111,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     }
 
     public class FetchTitleTask extends AsyncTask<String, Void, String> {
+        Boolean isFavorites;
 
         @Override
         protected void onPreExecute() {
@@ -119,64 +124,94 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         @Override
         protected String doInBackground(String... strings) {
-            URL url = null;
-            try {
-                Uri uri = Uri.parse(strings[0]);
-                url = new URL(uri.toString());
+            isFavorites = false;
+            if (strings[0] == getString(R.string.favorites)){
+                isFavorites = true;
+                return getString(R.string.favorites);
+            }
+            else {
+                URL url = null;
+                try {
+                    Uri uri = Uri.parse(strings[0]);
+                    url = new URL(uri.toString());
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    jsonResponse = getResponseFromHttpUrl(url);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return jsonResponse;
             }
 
-            try {
-                jsonResponse = getResponseFromHttpUrl(url);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return jsonResponse;
         }
 
         @Override
         protected void onPostExecute(String string) {
-            JSONObject jsonObject;
-            JSONArray jsonArray;
-            JSONObject jsonObject2;
-            String posterUrl;
-            ArrayList<String> posterUrls = new ArrayList<String>();
-            String title;
-            ArrayList<String> titles = new ArrayList<String>();
-            String voteAverage;
-            ArrayList<String> voteAverages = new ArrayList<String>();
-            String overview;
-            ArrayList<String> overviews = new ArrayList<String>();
-            String releaseDate;
-            ArrayList<String> releaseDates = new ArrayList<String>();
-            String movieId;
-            ArrayList<String> movieIds = new ArrayList<String>();
-            try {
-                jsonObject = new JSONObject(string);
-                jsonArray = jsonObject.getJSONArray(getString(R.string.results));
-                for (int i=0; i<jsonArray.length(); i++){
-                    jsonObject2 = jsonArray.getJSONObject(i);
-                    posterUrl = getString(R.string.poster_base_url) + jsonObject2.getString(getString(R.string.poster_path));
-                    title = jsonObject2.getString(getString(R.string.original_title));
-                    voteAverage = jsonObject2.get(getString(R.string.vote_average)) + getString(R.string.forward_slash_ten);
-                    overview = jsonObject2.getString(getString(R.string.overview));
-                    releaseDate = jsonObject2.getString(getString(R.string.release_date));
-                    movieId = jsonObject2.get("id").toString();
-                    posterUrls.add(posterUrl);
-                    titles.add(title);
-                    voteAverages.add(voteAverage);
-                    overviews.add(overview);
-                    releaseDates.add(releaseDate);
-                    movieIds.add(movieId);
-                }
+            if (isFavorites){
+                //List<String> posterUrlsList = new List<String>();
+                //posterUrlsList.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
+                //ArrayList<String> posterUrls = new ArrayList<String>(posterUrlsList);
+                ArrayList<String> posterUrls = new ArrayList<String>();
+                posterUrls.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
+                ArrayList<String> titles = new ArrayList<String>();
+                titles.add("Avengers: Endgame");
+                ArrayList<String> voteAverages = new ArrayList<String>();
+                voteAverages.add("8.5/10");
+                ArrayList<String> overviews = new ArrayList<String>();
+                overviews.add("After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.");
+                ArrayList<String> releaseDates = new ArrayList<String>();
+                releaseDates.add("2019-04-24");
+                ArrayList<String> movieIds = new ArrayList<String>();
+                movieIds.add("299534");
                 recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+            else {
+                JSONObject jsonObject;
+                JSONArray jsonArray;
+                JSONObject jsonObject2;
+                String posterUrl;
+                ArrayList<String> posterUrls = new ArrayList<String>();
+                String title;
+                ArrayList<String> titles = new ArrayList<String>();
+                String voteAverage;
+                ArrayList<String> voteAverages = new ArrayList<String>();
+                String overview;
+                ArrayList<String> overviews = new ArrayList<String>();
+                String releaseDate;
+                ArrayList<String> releaseDates = new ArrayList<String>();
+                String movieId;
+                ArrayList<String> movieIds = new ArrayList<String>();
+                try {
+                    jsonObject = new JSONObject(string);
+                    jsonArray = jsonObject.getJSONArray(getString(R.string.results));
+                    for (int i=0; i<jsonArray.length(); i++){
+                        jsonObject2 = jsonArray.getJSONObject(i);
+                        posterUrl = getString(R.string.poster_base_url) + jsonObject2.getString(getString(R.string.poster_path));
+                        title = jsonObject2.getString(getString(R.string.original_title));
+                        voteAverage = jsonObject2.get(getString(R.string.vote_average)) + getString(R.string.forward_slash_ten);
+                        overview = jsonObject2.getString(getString(R.string.overview));
+                        releaseDate = jsonObject2.getString(getString(R.string.release_date));
+                        movieId = jsonObject2.get("id").toString();
+                        posterUrls.add(posterUrl);
+                        titles.add(title);
+                        voteAverages.add(voteAverage);
+                        overviews.add(overview);
+                        releaseDates.add(releaseDate);
+                        movieIds.add(movieId);
+                    }
+                    recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
     }
 }

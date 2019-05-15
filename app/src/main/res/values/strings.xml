@@ -17,4 +17,5 @@
     <string name="rating_variable_name">rating</string>
     <string name="overview_variable_name">overview</string>
     <string name="release_date_variable_name">releaseDate</string>
+    <string name="favorites">Favorites</string>
 </resources>
