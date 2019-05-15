@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         favorite.setPosterUrl(posterUrl);
         favorite.setReleaseDate(releaseDate);
         favorite.setVoteAverage(voteAverage);
-        MainActivity.myAppDatabase.myDao().addFavorite(favorite);
+        //MainActivity.myAppDatabase.myDao().addFavorite(favorite);
         ///////////////
         if (!popular){
             baseUrl = getString(R.string.top_rated_base_url);
