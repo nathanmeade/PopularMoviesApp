@@ -43,6 +43,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String url2;
     private String[] urlArray;
     private String apiKey;
+    private String posterUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +62,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
         recyclerView2.setLayoutManager(linearLayoutManager2);
         recyclerView2.setHasFixedSize(true);
-        String posterUrl;
+        //String posterUrl;
         String title;
         String rating;
         String overview;
@@ -103,6 +104,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
         watchYoutubeVideo(this, "hA6hldpSTF8");
     }
 
+    public void onClickBtn2(View v) {
+        addFavorite();
+    }
+
     public static void watchYoutubeVideo(Context context, String id){
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
@@ -112,6 +117,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException ex) {
             context.startActivity(webIntent);
         }
+    }
+
+    public void addFavorite(){
+        Favorite favorite = new Favorite();
+        favorite.setMovieId(movieIdTextView.getText().toString());
+        favorite.setMovieName(titleTextView.getText().toString());
+        favorite.setOverview(overviewTextView.getText().toString());
+        favorite.setPosterUrl(posterUrl);
+        favorite.setReleaseDate(releaseDateTextView.getText().toString());
+        favorite.setVoteAverage(ratingTextView.getText().toString());
+        MainActivity.myAppDatabase.myDao().addFavorite(favorite);
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
