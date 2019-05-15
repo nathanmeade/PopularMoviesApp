@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +27,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -44,10 +47,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String[] urlArray;
     private String apiKey;
     private String posterUrl;
+    private int id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+        //Toggle Button Code:
+        ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    addFavorite();
+                    // The toggle is enabled
+                } else {
+                    deleteFavorite();
+                    // The toggle is disabled
+                }
+            }
+        });
+        //////////////////////
         titleTextView = findViewById(R.id.title);
         ratingTextView = findViewById(R.id.rating);
         overviewTextView = findViewById(R.id.overview);
@@ -128,6 +146,29 @@ public class MovieDetailsActivity extends AppCompatActivity {
         favorite.setReleaseDate(releaseDateTextView.getText().toString());
         favorite.setVoteAverage(ratingTextView.getText().toString());
         MainActivity.myAppDatabase.myDao().addFavorite(favorite);
+    }
+
+    public void deleteFavorite(){
+        Favorite favorite = new Favorite();
+        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
+        for (Favorite fvt : favoritesList){
+/*            posterUrls.add(fvt.getPosterUrl());
+            titles.add(fvt.getMovieName());
+            voteAverages.add(fvt.getVoteAverage());
+            overviews.add(fvt.getOverview());
+            releaseDates.add(fvt.getReleaseDate());
+            movieIds.add(fvt.getMovieId());*/
+            favorite.setId(fvt.getId());
+            MainActivity.myAppDatabase.myDao().deleteFavorite(favorite);
+        }
+        //favorite.setId(id);
+/*        favorite.setMovieId(movieIdTextView.getText().toString());
+        favorite.setMovieName(titleTextView.getText().toString());
+        favorite.setOverview(overviewTextView.getText().toString());
+        favorite.setPosterUrl(posterUrl);
+        favorite.setReleaseDate(releaseDateTextView.getText().toString());
+        favorite.setVoteAverage(ratingTextView.getText().toString());*/
+        //MainActivity.myAppDatabase.myDao().deleteFavorite(favorite);
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

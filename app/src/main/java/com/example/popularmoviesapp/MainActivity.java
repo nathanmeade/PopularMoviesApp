@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 ArrayList<String> movieIds = new ArrayList<String>();
                 //movieIds.add("299534");
                 List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
+                //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieId);
                 for (Favorite fvt : favoritesList){
                     posterUrls.add(fvt.getPosterUrl());
                     titles.add(fvt.getMovieName());
