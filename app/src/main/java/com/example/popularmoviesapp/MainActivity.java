@@ -1,5 +1,6 @@
 package com.example.popularmoviesapp;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,6 +34,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private String url;
     private boolean popular;
     private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
+    public static MyAppDatabase myAppDatabase;
+    private String movieName;
+    private String movieId;
+    private String posterUrl;
+    private String voteAverage;
+    private String overview;
+    private String releaseDate;
+    private Favorite favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView.setHasFixedSize(true);
         clickHandler = this;
         apiKey = BuildConfig.ApiKey;
+        //Database code:
+        myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
+        posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
+        movieName = "Avengers: Endgame";
+        voteAverage = "8.5/10";
+        overview = "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.";
+        releaseDate = "2019-04-24";
+        movieId = "299534";
+        favorite = new Favorite();
+        favorite.setMovieId(movieId);
+        favorite.setMovieName(movieName);
+        favorite.setOverview(overview);
+        favorite.setPosterUrl(posterUrl);
+        favorite.setReleaseDate(releaseDate);
+        favorite.setVoteAverage(voteAverage);
+        MainActivity.myAppDatabase.myDao().addFavorite(favorite);
+        ///////////////
         if (!popular){
             baseUrl = getString(R.string.top_rated_base_url);
         }
@@ -157,17 +183,26 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 //posterUrlsList.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
                 //ArrayList<String> posterUrls = new ArrayList<String>(posterUrlsList);
                 ArrayList<String> posterUrls = new ArrayList<String>();
-                posterUrls.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
+                //posterUrls.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
                 ArrayList<String> titles = new ArrayList<String>();
-                titles.add("Avengers: Endgame");
+                //titles.add("Avengers: Endgame");
                 ArrayList<String> voteAverages = new ArrayList<String>();
-                voteAverages.add("8.5/10");
+                //voteAverages.add("8.5/10");
                 ArrayList<String> overviews = new ArrayList<String>();
-                overviews.add("After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.");
+                //overviews.add("After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.");
                 ArrayList<String> releaseDates = new ArrayList<String>();
-                releaseDates.add("2019-04-24");
+                //releaseDates.add("2019-04-24");
                 ArrayList<String> movieIds = new ArrayList<String>();
-                movieIds.add("299534");
+                //movieIds.add("299534");
+                List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
+                for (Favorite fvt : favoritesList){
+                    posterUrls.add(fvt.getPosterUrl());
+                    titles.add(fvt.getMovieName());
+                    voteAverages.add(fvt.getVoteAverage());
+                    overviews.add(fvt.getOverview());
+                    releaseDates.add(fvt.getReleaseDate());
+                    movieIds.add(fvt.getMovieId());
+                }
                 recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
