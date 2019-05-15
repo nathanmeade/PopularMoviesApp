@@ -48,24 +48,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String apiKey;
     private String posterUrl;
     private int id;
+    private Boolean isFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-        //Toggle Button Code:
-        ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    addFavorite();
-                    // The toggle is enabled
-                } else {
-                    deleteFavorite();
-                    // The toggle is disabled
-                }
-            }
-        });
-        //////////////////////
+
         titleTextView = findViewById(R.id.title);
         ratingTextView = findViewById(R.id.rating);
         overviewTextView = findViewById(R.id.overview);
@@ -114,6 +102,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
         urlArray = new String[2];
         urlArray[0] = url;
         urlArray[1] = url2;
+        //Toggle Button Code:
+        ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton);
+        isFavorite = isFavorite();
+        if (isFavorite) {
+            toggle.setChecked(true);
+        }
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    addFavorite();
+                    // The toggle is enabled
+                } else {
+                    deleteFavorite();
+                    // The toggle is disabled
+                }
+            }
+        });
+        //////////////////////
         new FetchReviewTask().execute(urlArray);
 
     }
@@ -146,6 +152,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
         favorite.setReleaseDate(releaseDateTextView.getText().toString());
         favorite.setVoteAverage(ratingTextView.getText().toString());
         MainActivity.myAppDatabase.myDao().addFavorite(favorite);
+    }
+
+    public Boolean isFavorite(){
+        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
+        if (favoritesList.isEmpty()){
+            return false;
+        }
+        else {
+            return true;
+        }
+
     }
 
     public void deleteFavorite(){
