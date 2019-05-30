@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.popularmoviesapp.Database.Favorite;
+import com.example.popularmoviesapp.Database.MyAppDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -194,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 //releaseDates.add("2019-04-24");
                 ArrayList<String> movieIds = new ArrayList<String>();
                 //movieIds.add("299534");
+                //needs to be changed to livedata with observer:
                 List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
                 //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieId);
                 for (Favorite fvt : favoritesList){

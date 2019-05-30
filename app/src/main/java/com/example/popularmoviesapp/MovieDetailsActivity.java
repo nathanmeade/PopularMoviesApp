@@ -1,21 +1,26 @@
 package com.example.popularmoviesapp;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.popularmoviesapp.Database.Favorite;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -27,7 +32,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -49,6 +53,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String posterUrl;
     private int id;
     private Boolean isFavorite;
+    private static final String TAG = "MovieDetailsActivity";
+    private ToggleButton toggle;
+    private Favorite theFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,11 +110,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
         urlArray[0] = url;
         urlArray[1] = url2;
         //Toggle Button Code:
-        ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton);
-        isFavorite = isFavorite();
-        if (isFavorite) {
+        toggle = (ToggleButton) findViewById(R.id.togglebutton);
+        //isFavorite = isFavorite();
+
+        isFavorite=false;
+        Log.d(TAG, "in oncreate before isFavorite() call. isFavorite value: " + isFavorite);
+        isFavorite();
+        Log.d(TAG, "in oncreate after isFavorite() call. isFavorite value: " + isFavorite);
+        //isFavorite=true;
+/*        if (isFavorite) {
             toggle.setChecked(true);
-        }
+        }*/
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -152,32 +165,88 @@ public class MovieDetailsActivity extends AppCompatActivity {
         favorite.setReleaseDate(releaseDateTextView.getText().toString());
         favorite.setVoteAverage(ratingTextView.getText().toString());
         MainActivity.myAppDatabase.myDao().addFavorite(favorite);
+        //id = favorite.getId();
+        //LiveData<Favorite> favorite1 = MainActivity.myAppDatabase.myDao().getFavorite(id);
     }
 
-    public Boolean isFavorite(){
-        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
-        if (favoritesList.isEmpty()){
-            return false;
-        }
-        else {
-            return true;
-        }
+    public void isFavorite(){
+        //needs to be changed to live data:? with observer that is removed
+        //Favorite favoriteHolder = new Favorite();
+        Log.d(TAG, "start of isFavorite method");
+        //Toast.makeText(this, "start of isFavorite method", Toast.LENGTH_LONG);
 
+        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(MainActivity.myAppDatabase, movieIdTextView.getText().toString());
+        final MovieDetailsViewModel movieDetailsViewModel = ViewModelProviders.of(this, movieDetailsViewModelFactory).get(MovieDetailsViewModel.class);
+        movieDetailsViewModel.getFavorite().observe(this, new Observer<Favorite>() {
+            @Override
+            public void onChanged(@Nullable Favorite favorite) {
+
+                movieDetailsViewModel.getFavorite().removeObserver(this);
+                Log.d(TAG, "start of isFavorite onChanged method");
+                if (favorite == null){
+                    //return false;
+                    Log.d(TAG, "false");
+                    logTest();
+                    setFavoriteFlag(false);
+
+                }
+                else {
+                    //id = favorite.getId();
+                    //return true;
+                    Log.d(TAG, "true");
+                    logTest();
+                    setFavoriteFlag(true);
+                    //This is causing issues when noticing change in the data:
+                    toggle.setChecked(true);
+                    setFavorite(favorite);
+
+                }
+                Log.d(TAG, "end of isFavorite onChanged method");
+            }
+        });
+        Log.d(TAG, "end of isFavorite onChanged method");
+        //LiveData<Favorite> favorite = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
+
+
+    }
+
+    private void setFavorite(Favorite favorite) {
+        theFavorite = favorite;
+    }
+
+    private Favorite returnFavorite(){
+        return theFavorite;
+    }
+
+    private void setFavoriteFlag(Boolean bool) {
+        Log.d(TAG, "start of setFavoriteFlag method" + bool);
+        isFavorite = bool;
+
+        Log.d(TAG, "end of setFavoriteFlag method" + isFavorite);
+    }
+
+    private void logTest() {
+        Log.d(TAG, "Inside of logTest");
     }
 
     public void deleteFavorite(){
-        Favorite favorite = new Favorite();
-        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
-        for (Favorite fvt : favoritesList){
-/*            posterUrls.add(fvt.getPosterUrl());
-            titles.add(fvt.getMovieName());
-            voteAverages.add(fvt.getVoteAverage());
-            overviews.add(fvt.getOverview());
-            releaseDates.add(fvt.getReleaseDate());
-            movieIds.add(fvt.getMovieId());*/
+        Favorite favoriteHolder = new Favorite();
+        //needs to be changed to live data:? with observer that is removed
+        //LiveData<Favorite> liveDataFavorite = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
+        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(MainActivity.myAppDatabase, movieIdTextView.getText().toString());
+        final MovieDetailsViewModel movieDetailsViewModel = ViewModelProviders.of(this, movieDetailsViewModelFactory).get(MovieDetailsViewModel.class);
+        movieDetailsViewModel.getFavorite().observe(this, new Observer<Favorite>() {
+            @Override
+            public void onChanged(@Nullable Favorite favorite) {
+                movieDetailsViewModel.getFavorite().removeObserver(this);
+                MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
+            }
+        });
+/*        for (Favorite fvt : favoritesList){
             favorite.setId(fvt.getId());
             MainActivity.myAppDatabase.myDao().deleteFavorite(favorite);
-        }
+        }*/
+
         //favorite.setId(id);
 /*        favorite.setMovieId(movieIdTextView.getText().toString());
         favorite.setMovieName(titleTextView.getText().toString());

@@ -1,4 +1,4 @@
-package com.example.popularmoviesapp;
+package com.example.popularmoviesapp.Database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
