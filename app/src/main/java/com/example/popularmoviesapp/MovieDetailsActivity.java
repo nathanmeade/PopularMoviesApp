@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebStorage;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MovieDetailsActivity extends AppCompatActivity {
@@ -53,9 +55,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private String posterUrl;
     private int id;
     private Boolean isFavorite;
-    private static final String TAG = "MovieDetailsActivity";
+    private static final String TAG = "NathanLog";
     private ToggleButton toggle;
     private Favorite theFavorite;
+    private Favorite originalFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +115,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         //Toggle Button Code:
         toggle = (ToggleButton) findViewById(R.id.togglebutton);
         //isFavorite = isFavorite();
-
+        setOriginalFavorite();
         isFavorite=false;
         Log.d(TAG, "in oncreate before isFavorite() call. isFavorite value: " + isFavorite);
         isFavorite();
@@ -157,6 +160,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void addFavorite(){
+        Log.d(TAG, "start of addFavorite method");
         Favorite favorite = new Favorite();
         favorite.setMovieId(movieIdTextView.getText().toString());
         favorite.setMovieName(titleTextView.getText().toString());
@@ -188,18 +192,28 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     Log.d(TAG, "false");
                     logTest();
                     setFavoriteFlag(false);
-
+                    toggle.setChecked(false);
                 }
-                else {
+                else if ((favorite.getMovieId().equals(originalFavorite.getMovieId())) && !toggle.isChecked()) {
                     //id = favorite.getId();
                     //return true;
                     Log.d(TAG, "true");
                     logTest();
                     setFavoriteFlag(true);
                     //This is causing issues when noticing change in the data:
+
                     toggle.setChecked(true);
                     setFavorite(favorite);
 
+                }
+                else {
+                    Log.d(TAG, "else, favoriteMovieId: " + favorite.getMovieId());
+                    Log.d(TAG, "originalFavoriteMovieId: " + originalFavorite.getMovieId());
+                    Log.d(TAG, "is checked?: " + toggle.isChecked());
+                    Log.d(TAG, "favorite.getMovieId() == originalFavorite.getMovieId()?: " + (favorite.getMovieId() == originalFavorite.getMovieId()));
+                    Log.d(TAG, "favorite.getMovieId() type: " + favorite.getMovieId().getClass().getName());
+                    Log.d(TAG, "originalFavorite.getMovieId() type: " + originalFavorite.getMovieId().getClass().getName());
+                    //toggle.setChecked(false);
                 }
                 Log.d(TAG, "end of isFavorite onChanged method");
             }
@@ -211,7 +225,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void setFavorite(Favorite favorite) {
+
         theFavorite = favorite;
+        //theFavorite.setId(favorite.getId());
+/*        theFavorite.setMovieName(favorite.getMovieName());
+        theFavorite.setMovieId(favorite.getMovieId());
+        theFavorite.setPosterUrl(favorite.getPosterUrl());
+        theFavorite.setVoteAverage(favorite.getVoteAverage());
+        theFavorite.setOverview(favorite.getOverview());
+        theFavorite.setReleaseDate(favorite.getReleaseDate());*/
+    }
+
+    private void setOriginalFavorite() {
+        originalFavorite = new Favorite();
+        originalFavorite.setMovieId(movieIdTextView.getText().toString());
+        originalFavorite.setMovieName(titleTextView.getText().toString());
+        originalFavorite.setOverview(overviewTextView.getText().toString());
+        originalFavorite.setPosterUrl(posterUrl);
+        originalFavorite.setReleaseDate(releaseDateTextView.getText().toString());
+        originalFavorite.setVoteAverage(ratingTextView.getText().toString());
     }
 
     private Favorite returnFavorite(){
@@ -230,18 +262,33 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     public void deleteFavorite(){
-        Favorite favoriteHolder = new Favorite();
+        Log.d(TAG, "start of deleteFavorite method");
+        //MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
+
+        Favorite favorite = new Favorite();
+        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
+        for (Favorite fvt : favoritesList){
+            if ((movieIdTextView.getText().toString()).equals(fvt.getMovieId())) {
+                MainActivity.myAppDatabase.myDao().deleteFavorite(fvt);
+            }
+        }
+
+        ////Do not need live data for this!!!!
+        //Favorite favoriteHolder = new Favorite();
         //needs to be changed to live data:? with observer that is removed
         //LiveData<Favorite> liveDataFavorite = MainActivity.myAppDatabase.myDao().getFavorite(movieIdTextView.getText().toString());
-        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(MainActivity.myAppDatabase, movieIdTextView.getText().toString());
+/*        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(MainActivity.myAppDatabase, movieIdTextView.getText().toString());
         final MovieDetailsViewModel movieDetailsViewModel = ViewModelProviders.of(this, movieDetailsViewModelFactory).get(MovieDetailsViewModel.class);
         movieDetailsViewModel.getFavorite().observe(this, new Observer<Favorite>() {
             @Override
             public void onChanged(@Nullable Favorite favorite) {
                 movieDetailsViewModel.getFavorite().removeObserver(this);
-                MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
+                if (favorite != null) {
+                    MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
+                }
+
             }
-        });
+        });*/
 /*        for (Favorite fvt : favoritesList){
             favorite.setId(fvt.getId());
             MainActivity.myAppDatabase.myDao().deleteFavorite(favorite);
