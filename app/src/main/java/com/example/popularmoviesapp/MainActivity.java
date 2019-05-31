@@ -1,9 +1,19 @@
 package com.example.popularmoviesapp;
 
+import android.app.Activity;
+import android.app.Application;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -45,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private String overview;
     private String releaseDate;
     private Favorite favorite;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
         clickHandler = this;
+        activity = this;
         apiKey = BuildConfig.ApiKey;
         //Database code:
         myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
@@ -80,7 +92,35 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             baseUrl = getString(R.string.popular_base_url);
         }
         url = baseUrl + apiKey;
-        new FetchTitleTask().execute(url);
+        //new FetchTitleTask().execute(url);
+
+        /////Favorites livedata test:
+        MainViewModel mainViewModel;
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        //LifecycleOwner lifecycleOwner = LifecycleOwner.get;
+        mainViewModel.getFavorites().observe(this, new Observer<List<Favorite>>() {
+            @Override
+            public void onChanged(@Nullable List<Favorite> favorites) {
+                ArrayList<String> posterUrls = new ArrayList<String>();
+                ArrayList<String> titles = new ArrayList<String>();
+                ArrayList<String> voteAverages = new ArrayList<String>();
+                ArrayList<String> overviews = new ArrayList<String>();
+                ArrayList<String> releaseDates = new ArrayList<String>();
+                ArrayList<String> movieIds = new ArrayList<String>();
+                for (Favorite fvt : favorites) {
+                    posterUrls.add(fvt.getPosterUrl());
+                    titles.add(fvt.getMovieName());
+                    voteAverages.add(fvt.getVoteAverage());
+                    overviews.add(fvt.getOverview());
+                    releaseDates.add(fvt.getReleaseDate());
+                    movieIds.add(fvt.getMovieId());
+                }
+                //need to be changed to method call:
+                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                recyclerView.setAdapter(recyclerViewAdapter);
+            }
+        });
+        /////end of test
     }
 
     @Override
@@ -185,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 //List<String> posterUrlsList = new List<String>();
                 //posterUrlsList.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
                 //ArrayList<String> posterUrls = new ArrayList<String>(posterUrlsList);
-                ArrayList<String> posterUrls = new ArrayList<String>();
+ /*               ArrayList<String> posterUrls = new ArrayList<String>();
                 //posterUrls.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
                 ArrayList<String> titles = new ArrayList<String>();
                 //titles.add("Avengers: Endgame");
@@ -198,9 +238,42 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 ArrayList<String> movieIds = new ArrayList<String>();
                 //movieIds.add("299534");
                 //needs to be changed to livedata with observer:
-                List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
+
+                MainViewModel mainViewModel;
+                mainViewModel = ViewModelProviders.of((FragmentActivity) activity).get(MainViewModel.class);
+                //LifecycleOwner lifecycleOwner = LifecycleOwner.get;
+                mainViewModel.getFavorites().observe(new LifecycleOwner() {
+                    @NonNull
+                    @Override
+                    public Lifecycle getLifecycle() {
+                        return Lifecycle;
+                    }
+                }, new Observer<List<Favorite>>() {
+                    @Override
+                    public void onChanged(@Nullable List<Favorite> favorites) {
+                        ArrayList<String> posterUrls = new ArrayList<String>();
+                        ArrayList<String> titles = new ArrayList<String>();
+                        ArrayList<String> voteAverages = new ArrayList<String>();
+                        ArrayList<String> overviews = new ArrayList<String>();
+                        ArrayList<String> releaseDates = new ArrayList<String>();
+                        ArrayList<String> movieIds = new ArrayList<String>();
+                        for (Favorite fvt : favorites) {
+                            posterUrls.add(fvt.getPosterUrl());
+                            titles.add(fvt.getMovieName());
+                            voteAverages.add(fvt.getVoteAverage());
+                            overviews.add(fvt.getOverview());
+                            releaseDates.add(fvt.getReleaseDate());
+                            movieIds.add(fvt.getMovieId());
+                        }
+                        //need to be changed to method call:
+                        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                        recyclerView.setAdapter(recyclerViewAdapter);
+                    }*/
+                //});
+
+                //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
                 //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieId);
-                for (Favorite fvt : favoritesList){
+/*                for (Favorite fvt : favoritesList){
                     posterUrls.add(fvt.getPosterUrl());
                     titles.add(fvt.getMovieName());
                     voteAverages.add(fvt.getVoteAverage());
@@ -209,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     movieIds.add(fvt.getMovieId());
                 }
                 recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-                recyclerView.setAdapter(recyclerViewAdapter);
+                recyclerView.setAdapter(recyclerViewAdapter);*/
             }
             else {
                 JSONObject jsonObject;

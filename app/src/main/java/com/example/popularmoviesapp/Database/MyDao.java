@@ -18,7 +18,7 @@ public interface MyDao {
 
 
     @Query("select * from favorites")
-    public List<Favorite> getFavorites();
+    public LiveData<List<Favorite>> getFavorites();
 
     @Query("select * from favorites where movieId = :movieId")
     public LiveData<Favorite> getFavorite(String movieId);

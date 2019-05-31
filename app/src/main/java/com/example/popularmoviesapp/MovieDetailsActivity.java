@@ -266,12 +266,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         //MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
 
         Favorite favorite = new Favorite();
-        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
+        //commenting out until main activity livedata is figured out:
+/*        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
         for (Favorite fvt : favoritesList){
             if ((movieIdTextView.getText().toString()).equals(fvt.getMovieId())) {
                 MainActivity.myAppDatabase.myDao().deleteFavorite(fvt);
             }
-        }
+        }*/
 
         ////Do not need live data for this!!!!
         //Favorite favoriteHolder = new Favorite();
