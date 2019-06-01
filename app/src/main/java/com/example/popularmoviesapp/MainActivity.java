@@ -92,9 +92,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             baseUrl = getString(R.string.popular_base_url);
         }
         url = baseUrl + apiKey;
-        //new FetchTitleTask().execute(url);
+        new FetchTitleTask().execute(url);
 
         /////Favorites livedata test:
+
+        /////end of test
+    }
+
+    public void ObserveMethod(){
         MainViewModel mainViewModel;
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         //LifecycleOwner lifecycleOwner = LifecycleOwner.get;
@@ -120,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         });
-        /////end of test
     }
 
     @Override
@@ -157,7 +161,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 new FetchTitleTask().execute(url);
                 return true;
             case R.id.favorites:
-                new FetchTitleTask().execute(getString(R.string.favorites));
+                //new FetchTitleTask().execute(getString(R.string.favorites));
+                ObserveMethod();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
