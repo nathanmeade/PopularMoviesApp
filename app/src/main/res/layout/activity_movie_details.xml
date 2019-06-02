@@ -7,43 +7,11 @@
     tools:context=".MovieDetailsActivity"
     android:orientation="vertical">
 
-
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:overScrollMode="never">
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
-
-
-</LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-
-
     <ImageView
         android:layout_width="160dp"
         android:layout_height="320dp"
         android:id="@+id/image"/>
 
-<!--    <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="add favorite"
-        android:onClick="onClickBtn2"/>-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,7 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:overScrollMode="never">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,18 +58,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/release_date"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/movie_id"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="watch trailer"
-        android:onClick="onClickBtn"/>
-
-
 
 </LinearLayout>
