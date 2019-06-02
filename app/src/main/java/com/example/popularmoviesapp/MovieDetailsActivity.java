@@ -36,7 +36,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler {
     private TextView titleTextView;
     private TextView ratingTextView;
     private TextView overviewTextView;
@@ -59,11 +59,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private Favorite theFavorite;
     private Favorite originalFavorite;
     private int idReturnedFromFavorite;
+    private TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler clickHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
+        clickHandler = this;
         titleTextView = findViewById(R.id.title);
         ratingTextView = findViewById(R.id.rating);
         overviewTextView = findViewById(R.id.overview);
@@ -127,7 +129,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-        new FetchReviewTask().execute(urlArray);
+        new FetchReviewTask().execute(url2);
 
     }
 
@@ -266,47 +268,53 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(String movieId) {
+        watchYoutubeVideo(this, movieId);
+    }
 
-    public class FetchReviewTask extends AsyncTask<String, Void, String[]> {
+
+    public class FetchReviewTask extends AsyncTask<String, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected String[] doInBackground(String... strings) {
-            jsonResponse = new String[2];
+        protected String doInBackground(String... strings) {
+            //jsonResponse = new String[2];
+            String newJsonResponseVariable = new String();
             URL url = null;
-            URL url2 = null;
+            //URL url2 = null;
             try {
                 Uri uri = Uri.parse(strings[0]);
                 url = new URL(uri.toString());
-                Uri uri2 = Uri.parse(strings[1]);
-                url2 = new URL(uri2.toString());
+/*                Uri uri2 = Uri.parse(strings[1]);
+                url2 = new URL(uri2.toString());*/
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                jsonResponse[0] = getResponseFromHttpUrl(url);
-                jsonResponse[1] = getResponseFromHttpUrl(url2);
+                newJsonResponseVariable = getResponseFromHttpUrl(url);
+                //jsonResponse[1] = getResponseFromHttpUrl(url2);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return jsonResponse;
+            return newJsonResponseVariable;
         }
 
         @Override
-        protected void onPostExecute(String[] s) {
+        protected void onPostExecute(String s) {
             JSONObject jsonObject;
             JSONArray jsonArray;
             JSONObject jsonObject2;
-            String reviewer;
+/*            String reviewer;
             ArrayList<String> reviewers = new ArrayList<String>();
             String review;
-            ArrayList<String> reviews = new ArrayList<String>();
+            ArrayList<String> reviews = new ArrayList<String>();*/
             //videos:
             JSONObject jsonObjectTrailer;
             JSONArray jsonArrayTrailer;
@@ -314,27 +322,27 @@ public class MovieDetailsActivity extends AppCompatActivity {
             String key;
             ArrayList<String> keys = new ArrayList<String>();
             try {
-                jsonObject = new JSONObject(s[0]);
-                jsonArray = jsonObject.getJSONArray(getString(R.string.results));
-                for (int i=0; i<jsonArray.length(); i++){
+                //jsonObject = new JSONObject(s[0]);
+                //jsonArray = jsonObject.getJSONArray(getString(R.string.results));
+/*                for (int i=0; i<jsonArray.length(); i++){
                     jsonObject2 = jsonArray.getJSONObject(i);
                     reviewer = jsonObject2.getString("author");
                     review = jsonObject2.getString("content");
                     reviewers.add(reviewer);
                     reviews.add(review);
-                }
-                reviewsRecyclerViewAdapter = new ReviewsRecyclerViewAdapter(reviewers, reviews);
-                recyclerView1.setAdapter(reviewsRecyclerViewAdapter);
+                }*/
+/*                reviewsRecyclerViewAdapter = new ReviewsRecyclerViewAdapter(reviewers, reviews);
+                recyclerView1.setAdapter(reviewsRecyclerViewAdapter);*/
                 //videos:
-                jsonObjectTrailer = new JSONObject(s[1]);
+                jsonObjectTrailer = new JSONObject(s);
                 jsonArrayTrailer = jsonObjectTrailer.getJSONArray(getString(R.string.results));
                 for (int i=0; i<jsonArrayTrailer.length(); i++){
                     jsonObjectTrailer2 = jsonArrayTrailer.getJSONObject(i);
                     key = jsonObjectTrailer2.getString("key");
                     keys.add(key);
                 }
-/*                trailersRecyclerViewAdapter = new TrailersRecyclerViewAdapter(keys);
-                recyclerView2.setAdapter(trailersRecyclerViewAdapter);*/
+                trailersRecyclerViewAdapter = new TrailersRecyclerViewAdapter(keys, clickHandler);
+                recyclerView2.setAdapter(trailersRecyclerViewAdapter);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

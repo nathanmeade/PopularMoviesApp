@@ -53,8 +53,7 @@ public class TrailersRecyclerViewAdapter extends RecyclerView.Adapter<TrailersRe
 
     @Override
     public void onBindViewHolder(@NonNull TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterViewHolder holder, int position) {
-        holder.keyTextView.setText(mKeys.get(position));
-
+        holder.keyTextView.setText("Trailer " + (position + 1));
     }
 
     @Override
