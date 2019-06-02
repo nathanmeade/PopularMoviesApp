@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.example.popularmoviesapp.Database.Favorite;
 import com.squareup.picasso.Picasso;
 
@@ -94,7 +95,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
         ratingTextView.setText(rating);
         overviewTextView.setText(overview);
         releaseDateTextView.setText(releaseDate);
-        Picasso.get().load(posterUrl).into(imageView);
+        //Picasso.get().load(posterUrl).into(imageView);
+        Glide.with(this).load(posterUrl).into(imageView);
         apiKey = BuildConfig.ApiKey;
         url2 = "http://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=" + apiKey;
         toggle = findViewById(R.id.togglebutton);

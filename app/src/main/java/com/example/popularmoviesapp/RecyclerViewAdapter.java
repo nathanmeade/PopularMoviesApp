@@ -1,5 +1,7 @@
 package com.example.popularmoviesapp;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,12 +24,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mReleaseDates;
     private ArrayList<String> mMovieIds;
     private final RecyclerViewAdapterOnClickHandler mClickHandler;
+    private RequestManager glide;
 
     public interface RecyclerViewAdapterOnClickHandler {
         void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId);
     }
 
-    public RecyclerViewAdapter(ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, ArrayList<String> movieIds, RecyclerViewAdapterOnClickHandler clickHandler) {
+    public RecyclerViewAdapter(RequestManager glide, ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, ArrayList<String> movieIds, RecyclerViewAdapterOnClickHandler clickHandler) {
         mPosterUrls = posterUrls;
         mTitles = titles;
         mVoteAverages = voteAverages;
@@ -33,6 +38,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         mReleaseDates = releaseDates;
         mMovieIds = movieIds;
         mClickHandler = clickHandler;
+        this.glide = glide;
     }
 
     public class RecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -69,7 +75,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewAdapterViewHolder holder, int position) {
-        Picasso.get().load(mPosterUrls.get(position)).into(holder.imageView);
+        //Picasso.get().load(mPosterUrls.get(position)).into(holder.imageView);
+        //RequestManager glide = new RequestManager();
+        glide.load(mPosterUrls.get(position)).into(holder.imageView);
     }
 
     @Override

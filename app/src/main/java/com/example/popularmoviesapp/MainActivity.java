@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.example.popularmoviesapp.Database.Favorite;
 import com.example.popularmoviesapp.Database.MyAppDatabase;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private String releaseDate;
     private Favorite favorite;
     private Activity activity;
+    private RequestManager requestManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,12 +99,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             releaseDates = savedInstanceState.getStringArrayList("releaseDate");
             ArrayList<String> movieIds = new ArrayList<String>();
             movieIds = savedInstanceState.getStringArrayList("movieId");
-            RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+            RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(Glide.with(this), posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
             recyclerView.setAdapter(recyclerViewAdapter2);
         }
         else {
             new FetchTitleTask().execute(url);
         }
+        requestManager = Glide.with(this);
     }
 
     @Override
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     releaseDates.add(fvt.getReleaseDate());
                     movieIds.add(fvt.getMovieId());
                 }
-                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         });
@@ -277,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         releaseDates.add(releaseDate);
                         movieIds.add(movieId);
                     }
-                    recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                    recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } catch (JSONException e) {
                     e.printStackTrace();
