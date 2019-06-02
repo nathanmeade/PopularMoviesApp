@@ -92,11 +92,44 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             baseUrl = getString(R.string.popular_base_url);
         }
         url = baseUrl + apiKey;
-        new FetchTitleTask().execute(url);
-
+        if (savedInstanceState != null) {
+            //mMovies = savedInstanceState.getParcelableArrayList("SAVE_INSTANCE");
+            ArrayList<String> posterUrls = new ArrayList<String>();
+            posterUrls = savedInstanceState.getStringArrayList("posterUrls");
+            ArrayList<String> titles = new ArrayList<String>();
+            titles = savedInstanceState.getStringArrayList("titles");
+            ArrayList<String> voteAverages = new ArrayList<String>();
+            voteAverages = savedInstanceState.getStringArrayList("voteAverages");
+            ArrayList<String> overviews = new ArrayList<String>();
+            overviews = savedInstanceState.getStringArrayList("overviews");
+            ArrayList<String> releaseDates = new ArrayList<String>();
+            releaseDates = savedInstanceState.getStringArrayList("releaseDate");
+            ArrayList<String> movieIds = new ArrayList<String>();
+            movieIds = savedInstanceState.getStringArrayList("movieId");
+            RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+            recyclerView.setAdapter(recyclerViewAdapter2);
+            //mMovieAdapter.setMovieList(mMovies);
+            //mMovieAdapter.notifyDataSetChanged();
+        }
+        else {
+            new FetchTitleTask().execute(url);
+        }
         /////Favorites livedata test:
 
         /////end of test
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        RecyclerViewAdapter recyclerViewAdapter = (RecyclerViewAdapter) recyclerView.getAdapter();
+        outState.putStringArrayList("posterUrls", recyclerViewAdapter.getPosterUrls());
+        outState.putStringArrayList("titles", recyclerViewAdapter.getTitles());
+        outState.putStringArrayList("voteAverages", recyclerViewAdapter.getVoteAverages());
+        outState.putStringArrayList("overviews", recyclerViewAdapter.getOverviews());
+        outState.putStringArrayList("releaseDate", recyclerViewAdapter.getReleaseDates());
+        outState.putStringArrayList("movieId", recyclerViewAdapter.getMovieIds());
+        //outState.putParcelable("clickHandler", recyclerViewAdapter.getClickHandler());
     }
 
     public void ObserveMethod(){

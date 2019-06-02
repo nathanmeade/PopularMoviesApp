@@ -76,4 +76,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         return mPosterUrls.size();
     }
+
+    public ArrayList<String> getPosterUrls(){
+        return mPosterUrls;
+    }
+    public ArrayList<String> getTitles(){
+        return mTitles;
+    }
+    public ArrayList<String> getVoteAverages(){
+        return mVoteAverages;
+    }
+    public ArrayList<String> getOverviews(){
+        return mOverviews;
+    }
+    public ArrayList<String> getReleaseDates(){
+        return mReleaseDates;
+    }
+    public ArrayList<String> getMovieIds(){
+        return mMovieIds;
+    }
+    public RecyclerViewAdapterOnClickHandler getClickHandler(){
+        return mClickHandler;
+    }
 }
