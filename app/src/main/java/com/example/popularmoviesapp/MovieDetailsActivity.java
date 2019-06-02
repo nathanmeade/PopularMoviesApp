@@ -59,6 +59,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private ToggleButton toggle;
     private Favorite theFavorite;
     private Favorite originalFavorite;
+    private int idReturnedFromFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +117,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         toggle = (ToggleButton) findViewById(R.id.togglebutton);
         //isFavorite = isFavorite();
         setOriginalFavorite();
+        theFavorite = new Favorite();
         isFavorite=false;
         Log.d(TAG, "in oncreate before isFavorite() call. isFavorite value: " + isFavorite);
         isFavorite();
@@ -162,6 +164,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public void addFavorite(){
         Log.d(TAG, "start of addFavorite method");
         Favorite favorite = new Favorite();
+        //favorite.setId();
         favorite.setMovieId(movieIdTextView.getText().toString());
         favorite.setMovieName(titleTextView.getText().toString());
         favorite.setOverview(overviewTextView.getText().toString());
@@ -204,6 +207,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                     toggle.setChecked(true);
                     setFavorite(favorite);
+                    setFavoriteId(favorite.getId());
 
                 }
                 else {
@@ -226,14 +230,18 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private void setFavorite(Favorite favorite) {
 
-        theFavorite = favorite;
-        //theFavorite.setId(favorite.getId());
-/*        theFavorite.setMovieName(favorite.getMovieName());
+        //theFavorite = favorite;
+        theFavorite.setId(favorite.getId());
+        theFavorite.setMovieName(favorite.getMovieName());
         theFavorite.setMovieId(favorite.getMovieId());
         theFavorite.setPosterUrl(favorite.getPosterUrl());
         theFavorite.setVoteAverage(favorite.getVoteAverage());
         theFavorite.setOverview(favorite.getOverview());
-        theFavorite.setReleaseDate(favorite.getReleaseDate());*/
+        theFavorite.setReleaseDate(favorite.getReleaseDate());
+    }
+
+    private void setFavoriteId(int id) {
+        idReturnedFromFavorite = id;
     }
 
     private void setOriginalFavorite() {
@@ -266,6 +274,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         //MainActivity.myAppDatabase.myDao().deleteFavorite(returnFavorite());
 
         Favorite favorite = new Favorite();
+        MainActivity.myAppDatabase.myDao().deleteFavorite(movieIdTextView.getText().toString());
         //commenting out until main activity livedata is figured out:
 /*        List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
         for (Favorite fvt : favoritesList){
