@@ -1,19 +1,13 @@
 package com.example.popularmoviesapp;
 
 import android.app.Activity;
-import android.app.Application;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -68,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         clickHandler = this;
         activity = this;
         apiKey = BuildConfig.ApiKey;
-        //Database code:
         myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
         posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
         movieName = "Avengers: Endgame";
@@ -83,8 +76,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         favorite.setPosterUrl(posterUrl);
         favorite.setReleaseDate(releaseDate);
         favorite.setVoteAverage(voteAverage);
-        //MainActivity.myAppDatabase.myDao().addFavorite(favorite);
-        ///////////////
         if (!popular){
             baseUrl = getString(R.string.top_rated_base_url);
         }
@@ -93,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
         url = baseUrl + apiKey;
         if (savedInstanceState != null) {
-            //mMovies = savedInstanceState.getParcelableArrayList("SAVE_INSTANCE");
             ArrayList<String> posterUrls = new ArrayList<String>();
             posterUrls = savedInstanceState.getStringArrayList("posterUrls");
             ArrayList<String> titles = new ArrayList<String>();
@@ -108,15 +98,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             movieIds = savedInstanceState.getStringArrayList("movieId");
             RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
             recyclerView.setAdapter(recyclerViewAdapter2);
-            //mMovieAdapter.setMovieList(mMovies);
-            //mMovieAdapter.notifyDataSetChanged();
         }
         else {
             new FetchTitleTask().execute(url);
         }
-        /////Favorites livedata test:
-
-        /////end of test
     }
 
     @Override
@@ -129,13 +114,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         outState.putStringArrayList("overviews", recyclerViewAdapter.getOverviews());
         outState.putStringArrayList("releaseDate", recyclerViewAdapter.getReleaseDates());
         outState.putStringArrayList("movieId", recyclerViewAdapter.getMovieIds());
-        //outState.putParcelable("clickHandler", recyclerViewAdapter.getClickHandler());
     }
 
     public void ObserveMethod(){
         MainViewModel mainViewModel;
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        //LifecycleOwner lifecycleOwner = LifecycleOwner.get;
         mainViewModel.getFavorites().observe(this, new Observer<List<Favorite>>() {
             @Override
             public void onChanged(@Nullable List<Favorite> favorites) {
@@ -153,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                     releaseDates.add(fvt.getReleaseDate());
                     movieIds.add(fvt.getMovieId());
                 }
-                //need to be changed to method call:
                 RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
@@ -260,67 +242,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         @Override
         protected void onPostExecute(String string) {
             if (isFavorites){
-                //List<String> posterUrlsList = new List<String>();
-                //posterUrlsList.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
-                //ArrayList<String> posterUrls = new ArrayList<String>(posterUrlsList);
- /*               ArrayList<String> posterUrls = new ArrayList<String>();
-                //posterUrls.add("http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
-                ArrayList<String> titles = new ArrayList<String>();
-                //titles.add("Avengers: Endgame");
-                ArrayList<String> voteAverages = new ArrayList<String>();
-                //voteAverages.add("8.5/10");
-                ArrayList<String> overviews = new ArrayList<String>();
-                //overviews.add("After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.");
-                ArrayList<String> releaseDates = new ArrayList<String>();
-                //releaseDates.add("2019-04-24");
-                ArrayList<String> movieIds = new ArrayList<String>();
-                //movieIds.add("299534");
-                //needs to be changed to livedata with observer:
-
-                MainViewModel mainViewModel;
-                mainViewModel = ViewModelProviders.of((FragmentActivity) activity).get(MainViewModel.class);
-                //LifecycleOwner lifecycleOwner = LifecycleOwner.get;
-                mainViewModel.getFavorites().observe(new LifecycleOwner() {
-                    @NonNull
-                    @Override
-                    public Lifecycle getLifecycle() {
-                        return Lifecycle;
-                    }
-                }, new Observer<List<Favorite>>() {
-                    @Override
-                    public void onChanged(@Nullable List<Favorite> favorites) {
-                        ArrayList<String> posterUrls = new ArrayList<String>();
-                        ArrayList<String> titles = new ArrayList<String>();
-                        ArrayList<String> voteAverages = new ArrayList<String>();
-                        ArrayList<String> overviews = new ArrayList<String>();
-                        ArrayList<String> releaseDates = new ArrayList<String>();
-                        ArrayList<String> movieIds = new ArrayList<String>();
-                        for (Favorite fvt : favorites) {
-                            posterUrls.add(fvt.getPosterUrl());
-                            titles.add(fvt.getMovieName());
-                            voteAverages.add(fvt.getVoteAverage());
-                            overviews.add(fvt.getOverview());
-                            releaseDates.add(fvt.getReleaseDate());
-                            movieIds.add(fvt.getMovieId());
-                        }
-                        //need to be changed to method call:
-                        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-                        recyclerView.setAdapter(recyclerViewAdapter);
-                    }*/
-                //});
-
-                //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorites();
-                //List<Favorite> favoritesList = MainActivity.myAppDatabase.myDao().getFavorite(movieId);
-/*                for (Favorite fvt : favoritesList){
-                    posterUrls.add(fvt.getPosterUrl());
-                    titles.add(fvt.getMovieName());
-                    voteAverages.add(fvt.getVoteAverage());
-                    overviews.add(fvt.getOverview());
-                    releaseDates.add(fvt.getReleaseDate());
-                    movieIds.add(fvt.getMovieId());
-                }
-                recyclerViewAdapter = new RecyclerViewAdapter(posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-                recyclerView.setAdapter(recyclerViewAdapter);*/
             }
             else {
                 JSONObject jsonObject;
