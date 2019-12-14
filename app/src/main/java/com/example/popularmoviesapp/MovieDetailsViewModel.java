@@ -1,7 +1,7 @@
 package com.example.popularmoviesapp;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.example.popularmoviesapp.Database.Favorite;
 import com.example.popularmoviesapp.Database.MyAppDatabase;

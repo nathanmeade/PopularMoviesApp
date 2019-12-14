@@ -1,17 +1,19 @@
 package com.example.popularmoviesapp;
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Room;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.room.Room;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -217,7 +219,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         @Override
         protected String doInBackground(String... strings) {
+            Log.d("nathanTest", "doinbackground");
             isFavorites = false;
+
             if (strings[0] == getString(R.string.favorites)){
                 isFavorites = true;
                 return getString(R.string.favorites);
@@ -245,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
 
         @Override
         protected void onPostExecute(String string) {
+            Log.d("nathanTest", "start of onpostexectue");
             if (isFavorites){
             }
             else {
@@ -263,10 +268,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 ArrayList<String> releaseDates = new ArrayList<String>();
                 String movieId;
                 ArrayList<String> movieIds = new ArrayList<String>();
+                Log.d("nathanTest", "onpostexectue variables initialized");
                 try {
+                    Log.d("nathanTest", "start of try block");
+                    Log.d("nathanTest", "string is empty?: " + string.isEmpty());
                     jsonObject = new JSONObject(string);
+                    Log.d("nathanTest", "onpostexectue jsonobject initialized");
                     jsonArray = jsonObject.getJSONArray(getString(R.string.results));
-                    for (int i=0; i<jsonArray.length(); i++){
+                    Log.d("nathanTest", "before jsonarray.lenght call");
+                    int arrayLength = jsonArray.length();
+                    for (int i=0; i<arrayLength; i++){
                         jsonObject2 = jsonArray.getJSONObject(i);
                         posterUrl = getString(R.string.poster_base_url) + jsonObject2.getString(getString(R.string.poster_path));
                         title = jsonObject2.getString(getString(R.string.original_title));
