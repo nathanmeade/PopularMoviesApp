@@ -20,10 +20,7 @@ import java.util.Scanner;
 
 public class ReviewActivity extends AppCompatActivity {
 
-    private String url;
-    private String apiKey;
     private RecyclerView recyclerView1;
-    private ReviewsRecyclerViewAdapter reviewsRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +31,11 @@ public class ReviewActivity extends AppCompatActivity {
         recyclerView1.setLayoutManager(linearLayoutManager);
         recyclerView1.setHasFixedSize(true);
         String movieId;
-        apiKey = BuildConfig.ApiKey;
+        String apiKey = BuildConfig.ApiKey;
         Bundle extras = getIntent().getExtras();
+        assert extras != null;
         movieId = extras.getString("movieId");
-        url = "http://api.themoviedb.org/3/movie/" + movieId + "/reviews?api_key=" + apiKey;
+        String url = "http://api.themoviedb.org/3/movie/" + movieId + "/reviews?api_key=" + apiKey;
         new FetchReviewTask().execute(url);
     }
 
@@ -68,7 +66,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String newJsonResponseVariable = new String();
+            String newJsonResponseVariable = "";
             URL url = null;
             try {
                 Uri uri = Uri.parse(strings[0]);
@@ -78,6 +76,7 @@ public class ReviewActivity extends AppCompatActivity {
             }
 
             try {
+                assert url != null;
                 newJsonResponseVariable = getResponseFromHttpUrl(url);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -91,9 +90,9 @@ public class ReviewActivity extends AppCompatActivity {
             JSONArray jsonArray;
             JSONObject jsonObject2;
             String reviewer;
-            ArrayList<String> reviewers = new ArrayList<String>();
+            ArrayList<String> reviewers = new ArrayList<>();
             String review;
-            ArrayList<String> reviews = new ArrayList<String>();
+            ArrayList<String> reviews = new ArrayList<>();
             try {
                 jsonObject = new JSONObject(s);
                 jsonArray = jsonObject.getJSONArray(getString(R.string.results));
@@ -104,7 +103,7 @@ public class ReviewActivity extends AppCompatActivity {
                     reviewers.add(reviewer);
                     reviews.add(review);
                 }
-                reviewsRecyclerViewAdapter = new ReviewsRecyclerViewAdapter(reviewers, reviews);
+                ReviewsRecyclerViewAdapter reviewsRecyclerViewAdapter = new ReviewsRecyclerViewAdapter(reviewers, reviews);
                 recyclerView1.setAdapter(reviewsRecyclerViewAdapter);
             } catch (JSONException e) {
                 e.printStackTrace();

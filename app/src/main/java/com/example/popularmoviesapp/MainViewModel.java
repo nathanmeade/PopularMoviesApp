@@ -21,7 +21,7 @@ public class MainViewModel extends AndroidViewModel {
         //mFavoritesList = myAppDatabase.myDao().getFavorites();
     }
 
-    public LiveData<List<Favorite>> getFavorites(){
+    LiveData<List<Favorite>> getFavorites(){
 
         return mFavoritesList;
     }

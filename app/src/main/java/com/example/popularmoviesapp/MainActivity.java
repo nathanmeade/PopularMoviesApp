@@ -1,22 +1,19 @@
 package com.example.popularmoviesapp;
 
-import android.app.Activity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.room.Room;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -32,13 +29,11 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler {
 
     private RecyclerView recyclerView;
-    private RecyclerViewAdapter recyclerViewAdapter;
     private String apiKey;
     private String jsonResponse;
     private String baseUrl;
@@ -46,14 +41,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private boolean popular;
     private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
     public static MyAppDatabase myAppDatabase;
-    private String movieName;
-    private String movieId;
-    private String posterUrl;
-    private String voteAverage;
-    private String overview;
-    private String releaseDate;
-    private Favorite favorite;
-    private Activity activity;
     private RequestManager requestManager;
 
     @Override
@@ -65,16 +52,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
         clickHandler = this;
-        activity = this;
         apiKey = BuildConfig.ApiKey;
         myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
-        posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
-        movieName = "Avengers: Endgame";
-        voteAverage = "8.5/10";
-        overview = "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.";
-        releaseDate = "2019-04-24";
-        movieId = "299534";
-        favorite = new Favorite();
+        String posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
+        String movieName = "Avengers: Endgame";
+        String voteAverage = "8.5/10";
+        String overview = "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.";
+        String releaseDate = "2019-04-24";
+        String movieId = "299534";
+        Favorite favorite = new Favorite();
         favorite.setMovieId(movieId);
         favorite.setMovieName(movieName);
         favorite.setOverview(overview);
@@ -89,17 +75,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         }
         url = baseUrl + apiKey;
         if (savedInstanceState != null) {
-            ArrayList<String> posterUrls = new ArrayList<String>();
+            ArrayList<String> posterUrls;
             posterUrls = savedInstanceState.getStringArrayList("posterUrls");
-            ArrayList<String> titles = new ArrayList<String>();
+            ArrayList<String> titles;
             titles = savedInstanceState.getStringArrayList("titles");
-            ArrayList<String> voteAverages = new ArrayList<String>();
+            ArrayList<String> voteAverages;
             voteAverages = savedInstanceState.getStringArrayList("voteAverages");
-            ArrayList<String> overviews = new ArrayList<String>();
+            ArrayList<String> overviews;
             overviews = savedInstanceState.getStringArrayList("overviews");
-            ArrayList<String> releaseDates = new ArrayList<String>();
+            ArrayList<String> releaseDates;
             releaseDates = savedInstanceState.getStringArrayList("releaseDate");
-            ArrayList<String> movieIds = new ArrayList<String>();
+            ArrayList<String> movieIds;
             movieIds = savedInstanceState.getStringArrayList("movieId");
             RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(Glide.with(this), posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
             recyclerView.setAdapter(recyclerViewAdapter2);
@@ -114,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         RecyclerViewAdapter recyclerViewAdapter = (RecyclerViewAdapter) recyclerView.getAdapter();
+        assert recyclerViewAdapter != null;
         outState.putStringArrayList("posterUrls", recyclerViewAdapter.getPosterUrls());
         outState.putStringArrayList("titles", recyclerViewAdapter.getTitles());
         outState.putStringArrayList("voteAverages", recyclerViewAdapter.getVoteAverages());
@@ -125,26 +112,24 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     public void ObserveMethod(){
         MainViewModel mainViewModel;
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        mainViewModel.getFavorites().observe(this, new Observer<List<Favorite>>() {
-            @Override
-            public void onChanged(@Nullable List<Favorite> favorites) {
-                ArrayList<String> posterUrls = new ArrayList<String>();
-                ArrayList<String> titles = new ArrayList<String>();
-                ArrayList<String> voteAverages = new ArrayList<String>();
-                ArrayList<String> overviews = new ArrayList<String>();
-                ArrayList<String> releaseDates = new ArrayList<String>();
-                ArrayList<String> movieIds = new ArrayList<String>();
-                for (Favorite fvt : favorites) {
-                    posterUrls.add(fvt.getPosterUrl());
-                    titles.add(fvt.getMovieName());
-                    voteAverages.add(fvt.getVoteAverage());
-                    overviews.add(fvt.getOverview());
-                    releaseDates.add(fvt.getReleaseDate());
-                    movieIds.add(fvt.getMovieId());
-                }
-                RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-                recyclerView.setAdapter(recyclerViewAdapter);
+        mainViewModel.getFavorites().observe(this, favorites -> {
+            ArrayList<String> posterUrls = new ArrayList<>();
+            ArrayList<String> titles = new ArrayList<>();
+            ArrayList<String> voteAverages = new ArrayList<>();
+            ArrayList<String> overviews = new ArrayList<>();
+            ArrayList<String> releaseDates = new ArrayList<>();
+            ArrayList<String> movieIds = new ArrayList<>();
+            assert favorites != null;
+            for (Favorite fvt : favorites) {
+                posterUrls.add(fvt.getPosterUrl());
+                titles.add(fvt.getMovieName());
+                voteAverages.add(fvt.getVoteAverage());
+                overviews.add(fvt.getOverview());
+                releaseDates.add(fvt.getReleaseDate());
+                movieIds.add(fvt.getMovieId());
             }
+            RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+            recyclerView.setAdapter(recyclerViewAdapter);
         });
     }
 
@@ -222,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             Log.d("nathanTest", "doinbackground");
             isFavorites = false;
 
-            if (strings[0] == getString(R.string.favorites)){
+            if (strings[0].equals(getString(R.string.favorites))){
                 isFavorites = true;
                 return getString(R.string.favorites);
             }
@@ -237,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                 }
 
                 try {
+                    assert url != null;
                     jsonResponse = getResponseFromHttpUrl(url);
 
                 } catch (IOException e) {
@@ -250,24 +236,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         @Override
         protected void onPostExecute(String string) {
             Log.d("nathanTest", "start of onpostexectue");
-            if (isFavorites){
-            }
-            else {
+            if (!isFavorites){
                 JSONObject jsonObject;
                 JSONArray jsonArray;
                 JSONObject jsonObject2;
                 String posterUrl;
-                ArrayList<String> posterUrls = new ArrayList<String>();
+                ArrayList<String> posterUrls = new ArrayList<>();
                 String title;
-                ArrayList<String> titles = new ArrayList<String>();
+                ArrayList<String> titles = new ArrayList<>();
                 String voteAverage;
-                ArrayList<String> voteAverages = new ArrayList<String>();
+                ArrayList<String> voteAverages = new ArrayList<>();
                 String overview;
-                ArrayList<String> overviews = new ArrayList<String>();
+                ArrayList<String> overviews = new ArrayList<>();
                 String releaseDate;
-                ArrayList<String> releaseDates = new ArrayList<String>();
+                ArrayList<String> releaseDates = new ArrayList<>();
                 String movieId;
-                ArrayList<String> movieIds = new ArrayList<String>();
+                ArrayList<String> movieIds = new ArrayList<>();
                 Log.d("nathanTest", "onpostexectue variables initialized");
                 try {
                     Log.d("nathanTest", "start of try block");
@@ -292,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         releaseDates.add(releaseDate);
                         movieIds.add(movieId);
                     }
-                    recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
                     recyclerView.setAdapter(recyclerViewAdapter);
                 } catch (JSONException e) {
                     e.printStackTrace();

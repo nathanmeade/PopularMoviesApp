@@ -1,25 +1,24 @@
 package com.example.popularmoviesapp;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.popularmoviesapp.Database.Favorite;
@@ -46,16 +45,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
     @BindView(R.id.release_date)  TextView releaseDateTextView;
     @BindView(R.id.image)  ImageView imageView;
     @BindView(R.id.recycler_view2) RecyclerView recyclerView2;
-    private TrailersRecyclerViewAdapter trailersRecyclerViewAdapter;
-    private String url2;
-    private String apiKey;
     private String posterUrl;
-    private Boolean isFavorite;
-    private static final String TAG = "NathanLog";
     @BindView(R.id.togglebutton) ToggleButton toggle;
-    private Favorite theFavorite;
-    private Favorite originalFavorite;
-    private int idReturnedFromFavorite;
     private TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler clickHandler;
     private String movieId;
     @Override
@@ -93,20 +84,16 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
         releaseDateTextView.setText(releaseDate);
         //Picasso.get().load(posterUrl).into(imageView);
         Glide.with(this).load(posterUrl).into(imageView);
-        apiKey = BuildConfig.ApiKey;
-        url2 = "http://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=" + apiKey;
-        theFavorite = new Favorite();
-        isFavorite=false;
+        String apiKey = BuildConfig.ApiKey;
+        String url2 = "http://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=" + apiKey;
         isFavorite();
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    addFavorite();
-                    // The toggle is enabled
-                } else {
-                    deleteFavorite();
-                    // The toggle is disabled
-                }
+        toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                addFavorite();
+                // The toggle is enabled
+            } else {
+                deleteFavorite();
+                // The toggle is disabled
             }
         });
         new FetchReviewTask().execute(url2);
@@ -156,7 +143,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
     }
 
     public void isFavorite(){
-        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(MainActivity.myAppDatabase, movieId);
+        MovieDetailsViewModelFactory movieDetailsViewModelFactory = new MovieDetailsViewModelFactory(movieId);
         final MovieDetailsViewModel movieDetailsViewModel = ViewModelProviders.of(this, movieDetailsViewModelFactory).get(MovieDetailsViewModel.class);
         movieDetailsViewModel.getFavorite().observe(this, new Observer<Favorite>() {
             @Override
@@ -167,8 +154,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
                 }
                 else if ((favorite.getMovieId().equals(movieId)) && !toggle.isChecked()) {
                     toggle.setChecked(true);
-                }
-                else {
                 }
             }
         });
@@ -211,7 +196,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
 
         @Override
         protected String doInBackground(String... strings) {
-            String newJsonResponseVariable = new String();
+            String newJsonResponseVariable = "";
             URL url = null;
             try {
                 Uri uri = Uri.parse(strings[0]);
@@ -221,6 +206,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
             }
 
             try {
+                assert url != null;
                 newJsonResponseVariable = getResponseFromHttpUrl(url);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -234,7 +220,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
             JSONArray jsonArrayTrailer;
             JSONObject jsonObjectTrailer2;
             String key;
-            ArrayList<String> keys = new ArrayList<String>();
+            ArrayList<String> keys = new ArrayList<>();
             try {
                 jsonObjectTrailer = new JSONObject(s);
                 jsonArrayTrailer = jsonObjectTrailer.getJSONArray(getString(R.string.results));
@@ -243,7 +229,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
                     key = jsonObjectTrailer2.getString("key");
                     keys.add(key);
                 }
-                trailersRecyclerViewAdapter = new TrailersRecyclerViewAdapter(keys, clickHandler);
+                TrailersRecyclerViewAdapter trailersRecyclerViewAdapter = new TrailersRecyclerViewAdapter(keys, clickHandler);
                 recyclerView2.setAdapter(trailersRecyclerViewAdapter);
             } catch (JSONException e) {
                 e.printStackTrace();

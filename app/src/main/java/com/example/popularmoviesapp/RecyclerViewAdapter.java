@@ -26,7 +26,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId);
     }
 
-    public RecyclerViewAdapter(RequestManager glide, ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, ArrayList<String> movieIds, RecyclerViewAdapterOnClickHandler clickHandler) {
+    RecyclerViewAdapter(RequestManager glide, ArrayList<String> posterUrls, ArrayList<String> titles, ArrayList<String> voteAverages, ArrayList<String> overviews, ArrayList<String> releaseDates, ArrayList<String> movieIds, RecyclerViewAdapterOnClickHandler clickHandler) {
         mPosterUrls = posterUrls;
         mTitles = titles;
         mVoteAverages = voteAverages;
@@ -38,9 +38,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class RecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView imageView;
+        final ImageView imageView;
 
-        public RecyclerViewAdapterViewHolder(View view) {
+        RecyclerViewAdapterViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.image_view);
             view.setOnClickListener(this);
@@ -65,8 +65,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Context context = viewGroup.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.list_item, viewGroup, false);
-        RecyclerViewAdapterViewHolder movieViewHolder = new RecyclerViewAdapterViewHolder(view);
-        return movieViewHolder;
+        return new RecyclerViewAdapterViewHolder(view);
     }
 
     @Override
@@ -81,25 +80,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mPosterUrls.size();
     }
 
-    public ArrayList<String> getPosterUrls(){
+    ArrayList<String> getPosterUrls(){
         return mPosterUrls;
     }
-    public ArrayList<String> getTitles(){
+    ArrayList<String> getTitles(){
         return mTitles;
     }
-    public ArrayList<String> getVoteAverages(){
+    ArrayList<String> getVoteAverages(){
         return mVoteAverages;
     }
-    public ArrayList<String> getOverviews(){
+    ArrayList<String> getOverviews(){
         return mOverviews;
     }
-    public ArrayList<String> getReleaseDates(){
+    ArrayList<String> getReleaseDates(){
         return mReleaseDates;
     }
-    public ArrayList<String> getMovieIds(){
+    ArrayList<String> getMovieIds(){
         return mMovieIds;
-    }
-    public RecyclerViewAdapterOnClickHandler getClickHandler(){
-        return mClickHandler;
     }
 }

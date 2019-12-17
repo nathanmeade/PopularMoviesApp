@@ -4,20 +4,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.popularmoviesapp.Database.Favorite;
-import com.example.popularmoviesapp.Database.MyAppDatabase;
 
 public class MovieDetailsViewModel extends ViewModel {
-    final private MyAppDatabase myAppDatabase;
     final private String mFavoriteId;
-    private LiveData<Favorite> favorite;
 
-    public MovieDetailsViewModel(MyAppDatabase database, String favoriteId) {
-        myAppDatabase = database;
+    MovieDetailsViewModel(String favoriteId) {
         mFavoriteId = favoriteId;
     }
 
     public LiveData<Favorite> getFavorite(){
-        favorite = MainActivity.myAppDatabase.myDao().getFavorite(mFavoriteId);
-        return favorite;
+        return MainActivity.myAppDatabase.myDao().getFavorite(mFavoriteId);
     }
 }
