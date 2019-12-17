@@ -35,20 +35,24 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetailsActivity extends AppCompatActivity implements TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler {
-    private TextView titleTextView;
-    private TextView ratingTextView;
-    private TextView overviewTextView;
-    private TextView releaseDateTextView;
-    private ImageView imageView;
-    private RecyclerView recyclerView2;
+
+    @BindView(R.id.title)  TextView titleTextView;
+    @BindView(R.id.rating)  TextView ratingTextView;
+    @BindView(R.id.overview)  TextView overviewTextView;
+    @BindView(R.id.release_date)  TextView releaseDateTextView;
+    @BindView(R.id.image)  ImageView imageView;
+    @BindView(R.id.recycler_view2) RecyclerView recyclerView2;
     private TrailersRecyclerViewAdapter trailersRecyclerViewAdapter;
     private String url2;
     private String apiKey;
     private String posterUrl;
     private Boolean isFavorite;
     private static final String TAG = "NathanLog";
-    private ToggleButton toggle;
+    @BindView(R.id.togglebutton) ToggleButton toggle;
     private Favorite theFavorite;
     private Favorite originalFavorite;
     private int idReturnedFromFavorite;
@@ -58,14 +62,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-
+        ButterKnife.bind(this);
         clickHandler = this;
-        titleTextView = findViewById(R.id.title);
-        ratingTextView = findViewById(R.id.rating);
-        overviewTextView = findViewById(R.id.overview);
-        releaseDateTextView = findViewById(R.id.release_date);
-        imageView = findViewById(R.id.image);
-        recyclerView2 = findViewById(R.id.recycler_view2);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
         recyclerView2.setLayoutManager(linearLayoutManager2);
         recyclerView2.setHasFixedSize(true);
@@ -97,7 +95,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
         Glide.with(this).load(posterUrl).into(imageView);
         apiKey = BuildConfig.ApiKey;
         url2 = "http://api.themoviedb.org/3/movie/" + movieId + "/videos?api_key=" + apiKey;
-        toggle = findViewById(R.id.togglebutton);
         theFavorite = new Favorite();
         isFavorite=false;
         isFavorite();
