@@ -18,4 +18,5 @@
     <string name="overview_variable_name">overview</string>
     <string name="release_date_variable_name">releaseDate</string>
     <string name="favorites">Favorites</string>
+    <string name="favorite">Favorite:</string>
 </resources>

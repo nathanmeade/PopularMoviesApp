@@ -19,14 +19,14 @@ public class TrailersRecyclerViewAdapter extends RecyclerView.Adapter<TrailersRe
         void onClick(String movieId);
     }
 
-    public TrailersRecyclerViewAdapter(ArrayList<String> keys, TrailersRecyclerViewAdapterOnClickHandler clickHandler) {
+    TrailersRecyclerViewAdapter(ArrayList<String> keys, TrailersRecyclerViewAdapterOnClickHandler clickHandler) {
         mKeys = keys;
         mClickHandler = clickHandler;
     }
 
     public class TrailersRecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final TextView keyTextView;
-        public TrailersRecyclerViewAdapterViewHolder(View view) {
+        final TextView keyTextView;
+        TrailersRecyclerViewAdapterViewHolder(View view) {
             super(view);
             keyTextView = itemView.findViewById(R.id.key);
             view.setOnClickListener(this);
@@ -46,8 +46,7 @@ public class TrailersRecyclerViewAdapter extends RecyclerView.Adapter<TrailersRe
         Context context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.trailer_list_item, parent, false);
-        TrailersRecyclerViewAdapterViewHolder trailerViewHolder = new TrailersRecyclerViewAdapterViewHolder(view);
-        return trailerViewHolder;
+        return new TrailersRecyclerViewAdapterViewHolder(view);
     }
 
     @Override
@@ -60,7 +59,4 @@ public class TrailersRecyclerViewAdapter extends RecyclerView.Adapter<TrailersRe
         return mKeys.size();
     }
 
-    public TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler getClickHandler(){
-        return mClickHandler;
-    }
 }

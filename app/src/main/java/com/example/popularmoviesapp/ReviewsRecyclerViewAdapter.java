@@ -14,7 +14,7 @@ public class ReviewsRecyclerViewAdapter extends RecyclerView.Adapter<ReviewsRecy
     private ArrayList<String> mAuthors;
     private ArrayList<String> mReviews;
 
-    public ReviewsRecyclerViewAdapter(ArrayList<String> authors, ArrayList<String> reviews) {
+    ReviewsRecyclerViewAdapter(ArrayList<String> authors, ArrayList<String> reviews) {
         mAuthors = authors;
         mReviews = reviews;
     }
@@ -25,8 +25,7 @@ public class ReviewsRecyclerViewAdapter extends RecyclerView.Adapter<ReviewsRecy
         Context context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.review_list_item, parent, false);
-        ReviewsRecyclerViewAdapterViewHolder reviewViewHolder = new ReviewsRecyclerViewAdapterViewHolder(view);
-        return reviewViewHolder;
+        return new ReviewsRecyclerViewAdapterViewHolder(view);
     }
 
     @Override
@@ -40,11 +39,11 @@ public class ReviewsRecyclerViewAdapter extends RecyclerView.Adapter<ReviewsRecy
         return mAuthors.size();
     }
 
-    public class ReviewsRecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder {
-        public final TextView reviewerTextView;
-        public final TextView reviewTextView;
+    class ReviewsRecyclerViewAdapterViewHolder extends RecyclerView.ViewHolder {
+        final TextView reviewerTextView;
+        final TextView reviewTextView;
 
-        public ReviewsRecyclerViewAdapterViewHolder(View itemView) {
+        ReviewsRecyclerViewAdapterViewHolder(View itemView) {
             super(itemView);
             reviewerTextView = itemView.findViewById(R.id.reviewer);
             reviewTextView = itemView.findViewById(R.id.review);
