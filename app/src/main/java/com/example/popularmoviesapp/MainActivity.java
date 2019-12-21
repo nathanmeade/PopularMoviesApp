@@ -18,6 +18,8 @@ import androidx.room.Room;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.popularmoviesapp.Database.Favorite;
+import com.example.popularmoviesapp.Database.JsonResponse;
+import com.example.popularmoviesapp.Database.Movie;
 import com.example.popularmoviesapp.Database.MyAppDatabase;
 
 import org.json.JSONArray;
@@ -29,7 +31,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler {
 
@@ -47,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         recyclerView = findViewById(R.id.recycler_view);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -94,6 +106,54 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             new FetchTitleTask().execute(url);
         }
         requestManager = Glide.with(this);
+
+        //////////Retrofit code:///////////
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.base_url))
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonPlaceholderApi jsonPlaceholderApi = retrofit.create(JsonPlaceholderApi.class);
+
+        Call<JsonResponse> call = jsonPlaceholderApi.getMovies(apiKey);
+
+        call.enqueue(new Callback<JsonResponse>() {
+            @Override
+            public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
+                if (response.isSuccessful()){
+                    ArrayList<String> posterUrls = new ArrayList<>();
+                    String title;
+                    ArrayList<String> titles = new ArrayList<>();
+                    String voteAverage;
+                    ArrayList<String> voteAverages = new ArrayList<>();
+                    String overview;
+                    ArrayList<String> overviews = new ArrayList<>();
+                    String releaseDate;
+                    ArrayList<String> releaseDates = new ArrayList<>();
+                    String movieId;
+                    ArrayList<String> movieIds = new ArrayList<>();
+
+                    JsonResponse jsonResponse = response.body();
+                    List<Movie> movies = jsonResponse.getResults();
+                    for (Movie movie : movies) {
+                        posterUrls.add(getString(R.string.poster_base_url) + movie.getPosterPath());
+                        titles.add(movie.getName());
+                        voteAverages.add(movie.getVoteAverage().toString());
+                        overviews.add(movie.getOverview());
+                        releaseDates.add(movie.getReleaseDate());
+                        movieIds.add(Integer.toString(movie.getId()));
+                    }
+                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+                    recyclerView.setAdapter(recyclerViewAdapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonResponse> call, Throwable t) {
+
+            }
+        });
+        ///////////////////////////////////
     }
 
     @Override
@@ -277,7 +337,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
                         movieIds.add(movieId);
                     }
                     RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+/*
                     recyclerView.setAdapter(recyclerViewAdapter);
+*/
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
