@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 public class MovieDetailsViewModelFactory extends ViewModelProvider.NewInstanceFactory {
-    final private String mFavoriteId;
+    final private int mFavoriteId;
 
-    MovieDetailsViewModelFactory(String favoriteId) {
+    MovieDetailsViewModelFactory(int favoriteId) {
         mFavoriteId = favoriteId;
     }
 

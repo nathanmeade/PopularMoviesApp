@@ -8,9 +8,9 @@ public class Favorite {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String movieName;
-    private String movieId;
+    private int movieId;
     private String posterUrl;
-    private String voteAverage;
+    private Float voteAverage;
     private String overview;
     private String releaseDate;
 
@@ -22,13 +22,13 @@ public class Favorite {
         this.movieName = movieName;
     }
 
-    public void setMovieId(String movieId){
+    public void setMovieId(int movieId){
         this.movieId = movieId;
     }
 
     public void setPosterUrl(String posterUrl) { this.posterUrl = posterUrl;}
 
-    public void setVoteAverage(String voteAverage) { this.voteAverage = voteAverage;}
+    public void setVoteAverage(Float voteAverage) { this.voteAverage = voteAverage;}
 
     public void setOverview(String overview) {this.overview = overview;}
 
@@ -42,13 +42,13 @@ public class Favorite {
         return movieName;
     }
 
-    public String getMovieId(){
+    public int getMovieId(){
         return movieId;
     }
 
     public String getPosterUrl() { return posterUrl;}
 
-    public String getVoteAverage() { return voteAverage;}
+    public Float getVoteAverage() { return voteAverage;}
 
     public String getOverview() {return overview;}
 

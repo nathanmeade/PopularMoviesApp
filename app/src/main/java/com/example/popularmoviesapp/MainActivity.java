@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String baseUrl;
     private String url;
     private boolean popular;
-    private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
     private MovieAdapter.MovieAdapterOnClickHandler movieAdapterOnClickHandler;
     public static MyAppDatabase myAppDatabase;
     private RequestManager requestManager;
@@ -73,12 +72,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         movieAdapterOnClickHandler = this;
         apiKey = BuildConfig.ApiKey;
         myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
+        /*myAppDatabase.myDao().deleteFavorites();*/
         String posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
         String movieName = "Avengers: Endgame";
-        String voteAverage = "8.5/10";
+        Float voteAverage = 8.5f;
         String overview = "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.";
         String releaseDate = "2019-04-24";
-        String movieId = "299534";
+        int movieId = 299534;
         Favorite favorite = new Favorite();
         favorite.setMovieId(movieId);
         favorite.setMovieName(movieName);
@@ -92,29 +92,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         else {
             baseUrl = getString(R.string.popular_base_url);
         }
-        url = baseUrl + apiKey;
-        if (savedInstanceState != null) {
-            ArrayList<String> posterUrls;
-            posterUrls = savedInstanceState.getStringArrayList("posterUrls");
-            ArrayList<String> titles;
-            titles = savedInstanceState.getStringArrayList("titles");
-            ArrayList<String> voteAverages;
-            voteAverages = savedInstanceState.getStringArrayList("voteAverages");
-            ArrayList<String> overviews;
-            overviews = savedInstanceState.getStringArrayList("overviews");
-            ArrayList<String> releaseDates;
-            releaseDates = savedInstanceState.getStringArrayList("releaseDate");
-            ArrayList<String> movieIds;
-            movieIds = savedInstanceState.getStringArrayList("movieId");
-            RecyclerViewAdapter recyclerViewAdapter2 = new RecyclerViewAdapter(Glide.with(this), posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-            recyclerView.setAdapter(recyclerViewAdapter2);
-        }
-        else {
-            new FetchTitleTask().execute(url);
-        }
+
         requestManager = Glide.with(this);
 
-        Retrofit retrofit = new Retrofit.Builder()
+        retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -177,17 +158,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             ArrayList<String> overviews = new ArrayList<>();
             ArrayList<String> releaseDates = new ArrayList<>();
             ArrayList<String> movieIds = new ArrayList<>();
+            ArrayList<Movie> favoriteArrayList = new ArrayList<Movie>();
             assert favorites != null;
+/*
+            Movie movie;
+*/
             for (Favorite fvt : favorites) {
-                posterUrls.add(fvt.getPosterUrl());
+                Movie movie = new Movie(fvt.getMovieId(), fvt.getMovieName(), fvt.getPosterUrl(), fvt.getVoteAverage(), fvt.getOverview(), fvt.getReleaseDate());
+                favoriteArrayList.add(movie);
+/*                posterUrls.add(fvt.getPosterUrl());
                 titles.add(fvt.getMovieName());
                 voteAverages.add(fvt.getVoteAverage());
                 overviews.add(fvt.getOverview());
                 releaseDates.add(fvt.getReleaseDate());
-                movieIds.add(fvt.getMovieId());
+                movieIds.add(fvt.getMovieId());*/
             }
+/*
             RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-            recyclerView.setAdapter(recyclerViewAdapter);
+*/
+            MovieAdapter movieAdapter = new MovieAdapter(favoriteArrayList, movieAdapterOnClickHandler, requestManager, getString(R.string.poster_base_url));
+            recyclerView.setAdapter(movieAdapter);
         });
     }
 
@@ -341,7 +331,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                         releaseDates.add(releaseDate);
                         movieIds.add(movieId);
                     }
+/*
                     RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
+*/
 /*
                     recyclerView.setAdapter(recyclerViewAdapter);
 */

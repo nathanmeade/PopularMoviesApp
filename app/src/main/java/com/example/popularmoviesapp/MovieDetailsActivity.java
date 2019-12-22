@@ -49,7 +49,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
     private String posterUrl;
     @BindView(R.id.togglebutton) ToggleButton toggle;
     private TrailersRecyclerViewAdapter.TrailersRecyclerViewAdapterOnClickHandler clickHandler;
-    private String movieId;
+    private int movieId;
+    private Movie movie;
+    private String posterPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,22 +67,24 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
         String overview;
         String releaseDate;
         Bundle extras = getIntent().getExtras();
-        Movie movie = extras.getParcelable("movie");
+        movie = extras.getParcelable("movie");
         if(extras == null) {
             posterUrl= null;
             title= null;
             rating= null;
             overview= null;
             releaseDate = null;
-            movieId = null;
+            movieId = 0;
         }
         else {
-            posterUrl = getString(R.string.poster_base_url) + movie.getPosterPath();
+            posterPath = movie.getPosterPath();
+            posterUrl = getString(R.string.poster_base_url) + posterPath;
+            /*posterUrl = movie.getPosterPath();*/
             title = movie.getName();
             rating = movie.getVoteAverage().toString();
             overview = movie.getOverview();
             releaseDate = movie.getReleaseDate();
-            movieId = Integer.toString(movie.getId());
+            movieId = movie.getId();
         }
         titleTextView.setText(title);
         ratingTextView.setText(rating);
@@ -136,12 +141,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
 
     public void addFavorite(){
         Favorite favorite = new Favorite();
-        favorite.setMovieId(movieId);
-        favorite.setMovieName(titleTextView.getText().toString());
+        /*favorite.setMovieId(movieId);*/
+/*        favorite.setMovieName(titleTextView.getText().toString());
         favorite.setOverview(overviewTextView.getText().toString());
         favorite.setPosterUrl(posterUrl);
         favorite.setReleaseDate(releaseDateTextView.getText().toString());
-        favorite.setVoteAverage(ratingTextView.getText().toString());
+        favorite.setVoteAverage(ratingTextView.getText().toString());*/
+        favorite.setMovieId(movieId);
+        favorite.setMovieName(titleTextView.getText().toString());
+        favorite.setOverview(overviewTextView.getText().toString());
+        favorite.setPosterUrl(posterPath);
+        favorite.setReleaseDate(releaseDateTextView.getText().toString());
+        favorite.setVoteAverage(movie.getVoteAverage());
         MainActivity.myAppDatabase.myDao().addFavorite(favorite);
     }
 
@@ -155,7 +166,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
                 if (favorite == null){
                     toggle.setChecked(false);
                 }
-                else if ((favorite.getMovieId().equals(movieId)) && !toggle.isChecked()) {
+                else if ((favorite.getMovieId() == movieId) && !toggle.isChecked()) {
                     toggle.setChecked(true);
                 }
             }

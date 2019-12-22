@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
 
 import com.example.popularmoviesapp.Database.Favorite;
+import com.example.popularmoviesapp.Database.Movie;
 
 import java.util.List;
 

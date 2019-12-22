@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.popularmoviesapp.Database.Favorite;
+import com.example.popularmoviesapp.Database.Movie;
 
 public class MovieDetailsViewModel extends ViewModel {
-    final private String mFavoriteId;
+    final private int mFavoriteId;
 
-    MovieDetailsViewModel(String favoriteId) {
+    MovieDetailsViewModel(int favoriteId) {
         mFavoriteId = favoriteId;
     }
 

@@ -18,8 +18,11 @@ public interface MyDao {
     LiveData<List<Favorite>> getFavorites();
 
     @Query("select * from favorites where movieId = :movieId")
-    LiveData<Favorite> getFavorite(String movieId);
+    LiveData<Favorite> getFavorite(int movieId);
 
     @Query("delete from favorites where movieId = :movieId")
-    void deleteFavorite(String movieId);
+    void deleteFavorite(int movieId);
+
+    @Query("delete from favorites")
+    void deleteFavorites();
 }
