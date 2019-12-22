@@ -26,7 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }*/
 
     public interface MovieAdapterOnClickHandler {
-        void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId);
+        void onClick(Movie movie);
     }
 
     public MovieAdapter(ArrayList<Movie> mMovies, MovieAdapterOnClickHandler movieAdapterOnClickHandler, RequestManager glide, String baseUrl) {
@@ -78,13 +78,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             String releaseDate = "2019-04-24";
             String movieId = "299534";*/
 
-            String posterUrl = baseUrl + movie.getPosterPath();
+/*            String posterUrl = baseUrl + movie.getPosterPath();
             String title = movie.getName();
             String voteAverage = movie.getVoteAverage().toString();
             String overview = movie.getOverview();
             String releaseDate = movie.getReleaseDate();
-            String movieId = Integer.toString(movie.getId());
-            movieAdapterOnClickHandler.onClick(posterUrl, title, voteAverage, overview, releaseDate, movieId);
+            String movieId = Integer.toString(movie.getId());*/
+            movieAdapterOnClickHandler.onClick(movie);
         }
     }
 }

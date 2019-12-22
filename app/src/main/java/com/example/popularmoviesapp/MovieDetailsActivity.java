@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.popularmoviesapp.Database.Favorite;
+import com.example.popularmoviesapp.Database.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,6 +64,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
         String overview;
         String releaseDate;
         Bundle extras = getIntent().getExtras();
+        Movie movie = extras.getParcelable("movie");
         if(extras == null) {
             posterUrl= null;
             title= null;
@@ -70,13 +72,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements TrailersR
             overview= null;
             releaseDate = null;
             movieId = null;
-        } else {
-            posterUrl= extras.getString(getString(R.string.poster_url_variable_name));
-            title= extras.getString(getString(R.string.title_variable_name));
-            rating= extras.getString(getString(R.string.rating_variable_name));
-            overview= extras.getString(getString(R.string.overview_variable_name));
-            releaseDate= extras.getString(getString(R.string.release_date_variable_name));
-            movieId= extras.getString("movieId");
+        }
+        else {
+            posterUrl = getString(R.string.poster_base_url) + movie.getPosterPath();
+            title = movie.getName();
+            rating = movie.getVoteAverage().toString();
+            overview = movie.getOverview();
+            releaseDate = movie.getReleaseDate();
+            movieId = Integer.toString(movie.getId());
         }
         titleTextView.setText(title);
         ratingTextView.setText(rating);

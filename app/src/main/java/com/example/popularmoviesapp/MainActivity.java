@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter.MovieAdapterOnClickHandler movieAdapterOnClickHandler;
     public static MyAppDatabase myAppDatabase;
     private RequestManager requestManager;
+    private Retrofit retrofit;
+    private JsonPlaceholderApi jsonPlaceholderApi;
+    private Boolean isTopRated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,15 +114,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
         requestManager = Glide.with(this);
 
-        //////////Retrofit code:///////////
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_url))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        JsonPlaceholderApi jsonPlaceholderApi = retrofit.create(JsonPlaceholderApi.class);
+        jsonPlaceholderApi = retrofit.create(JsonPlaceholderApi.class);
+        isTopRated = true;
+        retrofitFunction(isTopRated);
+    }
 
-        Call<JsonResponse> call = jsonPlaceholderApi.getMovies(apiKey);
+    public void retrofitFunction(Boolean isTopRated){
+        //////////Retrofit code:///////////
+        Call<JsonResponse> call;
+        if (isTopRated){
+            call = jsonPlaceholderApi.getTopRated(apiKey);
+        }
+        else {
+            call = jsonPlaceholderApi.getPopular(apiKey);
+        }
 
         call.enqueue(new Callback<JsonResponse>() {
             @Override
@@ -179,14 +192,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(String posterUrl, String title, String voteAverage, String overview, String releaseDate, String movieId) {
+    public void onClick(Movie movie) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
-        intent.putExtra(getString(R.string.poster_url_variable_name), posterUrl);
+/*        intent.putExtra(getString(R.string.poster_url_variable_name), posterUrl);
         intent.putExtra(getString(R.string.title_variable_name), title);
         intent.putExtra(getString(R.string.rating_variable_name), voteAverage);
         intent.putExtra(getString(R.string.overview_variable_name), overview);
         intent.putExtra("movieId", movieId);
-        intent.putExtra(getString(R.string.release_date_variable_name), releaseDate);
+        intent.putExtra(getString(R.string.release_date_variable_name), releaseDate);*/
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("movie", movie);
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 
@@ -201,15 +217,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (item.getItemId()) {
             case R.id.most_popular:
                 popular = true;
+                isTopRated = false;
                 baseUrl = getString(R.string.popular_base_url);
                 url = baseUrl + apiKey;
-                new FetchTitleTask().execute(url);
+                retrofitFunction(isTopRated);
+                /*new FetchTitleTask().execute(url);*/
                 return true;
             case R.id.top_rated:
                 popular = false;
                 baseUrl = getString(R.string.top_rated_base_url);
                 url = baseUrl + apiKey;
-                new FetchTitleTask().execute(url);
+                isTopRated = true;
+                retrofitFunction(isTopRated);
+                /*new FetchTitleTask().execute(url);*/
                 return true;
             case R.id.favorites:
                 //new FetchTitleTask().execute(getString(R.string.favorites));

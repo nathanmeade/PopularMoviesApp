@@ -12,5 +12,8 @@ import retrofit2.http.Query;
 public interface JsonPlaceholderApi {
 
     @GET("3/movie/top_rated")
-    Call<JsonResponse> getMovies(@Query("api_key") String apiKey);
+    Call<JsonResponse> getTopRated(@Query("api_key") String apiKey);
+
+    @GET("3/movie/popular")
+    Call<JsonResponse> getPopular(@Query("api_key") String apiKey);
 }
