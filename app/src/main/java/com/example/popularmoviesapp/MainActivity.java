@@ -40,7 +40,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private RecyclerView recyclerView;
     private String apiKey;
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     private String url;
     private boolean popular;
     private RecyclerViewAdapter.RecyclerViewAdapterOnClickHandler clickHandler;
+    private MovieAdapter.MovieAdapterOnClickHandler movieAdapterOnClickHandler;
     public static MyAppDatabase myAppDatabase;
     private RequestManager requestManager;
 
@@ -63,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
+/*
         clickHandler = this;
+*/
+        movieAdapterOnClickHandler = this;
         apiKey = BuildConfig.ApiKey;
         myAppDatabase = Room.databaseBuilder(getApplicationContext(), MyAppDatabase.class, "favoritedb").allowMainThreadQueries().build();
         String posterUrl = "http://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg";
@@ -121,30 +125,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
             @Override
             public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
                 if (response.isSuccessful()){
-                    ArrayList<String> posterUrls = new ArrayList<>();
-                    String title;
-                    ArrayList<String> titles = new ArrayList<>();
-                    String voteAverage;
-                    ArrayList<String> voteAverages = new ArrayList<>();
-                    String overview;
-                    ArrayList<String> overviews = new ArrayList<>();
-                    String releaseDate;
-                    ArrayList<String> releaseDates = new ArrayList<>();
-                    String movieId;
-                    ArrayList<String> movieIds = new ArrayList<>();
-
                     JsonResponse jsonResponse = response.body();
-                    List<Movie> movies = jsonResponse.getResults();
-                    for (Movie movie : movies) {
-                        posterUrls.add(getString(R.string.poster_base_url) + movie.getPosterPath());
-                        titles.add(movie.getName());
-                        voteAverages.add(movie.getVoteAverage().toString());
-                        overviews.add(movie.getOverview());
-                        releaseDates.add(movie.getReleaseDate());
-                        movieIds.add(Integer.toString(movie.getId()));
-                    }
-                    RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(requestManager, posterUrls, titles, voteAverages, overviews, releaseDates, movieIds, clickHandler);
-                    recyclerView.setAdapter(recyclerViewAdapter);
+                    ArrayList<Movie> movies = jsonResponse.getResults();
+                    MovieAdapter movieAdapter = new MovieAdapter(movies, movieAdapterOnClickHandler, requestManager, getString(R.string.poster_base_url));
+                    recyclerView.setAdapter(movieAdapter);
                 }
             }
 
@@ -159,14 +143,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        RecyclerViewAdapter recyclerViewAdapter = (RecyclerViewAdapter) recyclerView.getAdapter();
-        assert recyclerViewAdapter != null;
-        outState.putStringArrayList("posterUrls", recyclerViewAdapter.getPosterUrls());
-        outState.putStringArrayList("titles", recyclerViewAdapter.getTitles());
-        outState.putStringArrayList("voteAverages", recyclerViewAdapter.getVoteAverages());
-        outState.putStringArrayList("overviews", recyclerViewAdapter.getOverviews());
-        outState.putStringArrayList("releaseDate", recyclerViewAdapter.getReleaseDates());
-        outState.putStringArrayList("movieId", recyclerViewAdapter.getMovieIds());
+        MovieAdapter movieAdapter = (MovieAdapter) recyclerView.getAdapter();
+        assert movieAdapter != null;
+/*        outState.putParcelableArrayList("movies", movieAdapter.getmMovies());*/
+/*        outState.putStringArrayList("posterUrls", movieAdapter.getPosterUrls());
+        outState.putStringArrayList("titles", movieAdapter.getTitles());
+        outState.putStringArrayList("voteAverages", movieAdapter.getVoteAverages());
+        outState.putStringArrayList("overviews", movieAdapter.getOverviews());
+        outState.putStringArrayList("releaseDate", movieAdapter.getReleaseDates());
+        outState.putStringArrayList("movieId", movieAdapter.getMovieIds());*/
     }
 
     public void ObserveMethod(){
