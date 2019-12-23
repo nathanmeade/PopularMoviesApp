@@ -13,6 +13,11 @@ Features include:
 <img width="45%" src=".github/screen2.png" />
 
 ## Libraries
+
+* [ButterKnife](https://github.com/JakeWharton/butterknife)
+* [Retrofit](https://github.com/square/retrofit)
+* [Glide](https://github.com/bumptech/glide)
+
 License
 -------
 
