@@ -1,4 +1,4 @@
-package com.meadetechnologies.popularmoviesapp
+package com.meadetechnologies.popularmoviesapp.ui.moviedetail
 
 import androidx.lifecycle.ViewModel
 

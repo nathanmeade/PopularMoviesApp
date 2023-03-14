@@ -1,7 +1,8 @@
-package com.meadetechnologies.popularmoviesapp
+package com.meadetechnologies.popularmoviesapp.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.meadetechnologies.popularmoviesapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
