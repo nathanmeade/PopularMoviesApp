@@ -2,22 +2,32 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.movielist.MovieListFragment">
+    <!--    <FrameLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        tools:context=".ui.movielist.MovieListFragment">-->
 
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+    <!--        &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:text="@string/hello_blank_fragment" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/nextFragmentButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Next Fragment" />-->
+
+    <!--    </FrameLayout>-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
-
-        <Button
-            android:id="@+id/nextFragmentButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Next Fragment" />
-
-    </FrameLayout>
+            android:background="@color/white" />
+    </LinearLayout>
 </layout>
