@@ -2,6 +2,7 @@ package com.meadetechnologies.popularmoviesapp.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.meadetechnologies.popularmoviesapp.data.model.Movie
 
 @Dao
 interface MovieDao {
