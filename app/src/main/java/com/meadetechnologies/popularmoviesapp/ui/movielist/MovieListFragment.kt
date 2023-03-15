@@ -73,10 +73,6 @@ class MovieListFragment : Fragment() {
         binding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
         Log.d(TAG, "onViewCreated: ${adapter.itemCount}")
         adapter.notifyDataSetChanged()
-        binding.nextFragmentButton.setOnClickListener {
-            val action = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailFragment(90)
-            findNavController().navigate(action)
-        }
         super.onViewCreated(view, savedInstanceState)
     }
 }
