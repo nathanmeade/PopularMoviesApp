@@ -7,6 +7,12 @@ class MovieLocalDataSourceImpl(private val movieDao: MovieDao) : MovieLocalDataS
     override suspend fun getMovies(): List<Movie> {
         //movieDao.addMovie(Movie(4))
 //        delay(2000)
-        return movieDao.getAllMovie().value ?: listOf(Movie(5))
+        return movieDao.getAllMovie() ?: listOf(Movie(5))
+    }
+
+    override suspend fun saveMovies(movies: List<Movie>) {
+        movies.forEach { movie ->
+            movieDao.addMovie(movie)
+        }
     }
 }

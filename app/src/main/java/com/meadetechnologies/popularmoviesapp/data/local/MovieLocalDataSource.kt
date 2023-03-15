@@ -4,4 +4,6 @@ import com.meadetechnologies.popularmoviesapp.data.model.Movie
 
 interface MovieLocalDataSource {
     suspend fun getMovies(): List<Movie>
+
+    suspend fun saveMovies(movies: List<Movie>)
 }

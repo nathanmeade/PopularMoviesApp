@@ -7,7 +7,7 @@ import com.meadetechnologies.popularmoviesapp.data.model.Movie
 @Dao
 interface MovieDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMovie(movie: Movie)
 
     @Update
@@ -20,7 +20,7 @@ interface MovieDao {
     fun clearMovie()
 
     @Query("SELECT * FROM movie_table ORDER BY id ASC")
-    fun getAllMovie(): LiveData<List<Movie>>
+    fun getAllMovie(): List<Movie>
 
     @Query("SELECT * FROM movie_table WHERE id = :id")
     fun getMovieById(id: Int): LiveData<Movie>

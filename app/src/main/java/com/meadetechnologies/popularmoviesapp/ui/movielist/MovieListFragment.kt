@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,9 +54,16 @@ class MovieListFragment : Fragment() {
         adapter = MovieAdapter(listOf(Movie(7), Movie(8)))
         adapter.notifyDataSetChanged()
         val myScope = CoroutineScope(Dispatchers.IO)
+        viewModel.movies.observe(viewLifecycleOwner, Observer {
+            adapter = MovieAdapter(it)
+            binding.recyclerView.adapter = adapter
+        })
         myScope.launch {
+//            viewModel.setMovies()
 //            adapter = MovieAdapter(viewModel.getMovies())
-////            adapter = MovieAdapter(listOf(Movie(67)))
+            Log.d(TAG, "onViewCreated: ${adapter.itemCount}")
+            viewModel.setMovies()
+//            adapter = MovieAdapter(listOf(Movie(67)))
 //            adapter.notifyDataSetChanged()
 //            binding.recyclerView.adapter = adapter
 //            binding.recyclerView.adapter?.notifyDataSetChanged()

@@ -18,11 +18,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val apiKey = "" + BuildConfig.API_KEY + ""
         Log.d("nathanTest", "onCreate: $apiKey")
-        val factory = MainViewModelFactory(application)
+        val factory = MainViewModelFactory(application, apiKey)
         viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
         val myScope = CoroutineScope(Dispatchers.IO)
         myScope.launch {
-            Log.d("nathanTest", "onCreate: ${viewModel.getMovies(apiKey)}")
+            Log.d("nathanTest", "onCreate: ${viewModel.movies}")
         }
 
     }
