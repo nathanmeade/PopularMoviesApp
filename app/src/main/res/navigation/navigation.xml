@@ -9,18 +9,27 @@
         android:id="@+id/movieListFragment"
         android:name="com.meadetechnologies.popularmoviesapp.ui.movielist.MovieListFragment"
         android:label="fragment_movie_list"
-        tools:layout="@layout/fragment_movie_list" >
+        tools:layout="@layout/fragment_movie_list">
         <action
             android:id="@+id/action_movieListFragment_to_movieDetailFragment"
-            app:destination="@id/movieDetailFragment" />
+            app:destination="@id/movieDetailFragment" >
+            <argument
+                android:name="id"
+                app:argType="integer"
+                android:defaultValue="1" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/movieDetailFragment"
         android:name="com.meadetechnologies.popularmoviesapp.ui.moviedetail.MovieDetailFragment"
         android:label="fragment_movie_detail"
-        tools:layout="@layout/fragment_movie_detail" >
+        tools:layout="@layout/fragment_movie_detail">
         <action
             android:id="@+id/action_movieDetailFragment_to_movieListFragment"
             app:destination="@id/movieListFragment" />
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

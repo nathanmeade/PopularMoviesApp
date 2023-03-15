@@ -18,6 +18,7 @@ class MovieDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie_detail, container, false)
+        binding.textView.text = arguments?.getInt("id").toString()
         return binding.root
     }
 
