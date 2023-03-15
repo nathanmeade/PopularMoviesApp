@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -51,7 +52,7 @@ class MovieListFragment : Fragment() {
         val activity = requireActivity() as MainActivity
         viewModel = activity.viewModel
         var adapter: MovieAdapter
-        adapter = MovieAdapter(listOf(Movie(7), Movie(8)))
+        adapter = MovieAdapter(listOf(Movie(7, "https://image.tmdb.org/t/p/original/8QVbWBv94BAT9u1q9uJccwOxMzt.jpg"), Movie(8, "https://image.tmdb.org/t/p/original/8QVbWBv94BAT9u1q9uJccwOxMzt.jpg")))
         adapter.notifyDataSetChanged()
         val myScope = CoroutineScope(Dispatchers.IO)
         viewModel.movies.observe(viewLifecycleOwner, Observer {
@@ -69,7 +70,7 @@ class MovieListFragment : Fragment() {
 //            binding.recyclerView.adapter?.notifyDataSetChanged()
         }
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        binding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 2)
         Log.d(TAG, "onViewCreated: ${adapter.itemCount}")
         adapter.notifyDataSetChanged()
         binding.nextFragmentButton.setOnClickListener {

@@ -38,7 +38,7 @@ class MainViewModel(application: Application, val apiKey: String) : ViewModel() 
         get() = _movies
 
     init {
-        _movies.value = mutableListOf(Movie(87))
+        _movies.value = mutableListOf(Movie(87, "https://api.themoviedb.org/3/movie/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"))
 //        viewModelScope.launch {
 //            movieRepository.refreshMovies(apiKey)
 //        }

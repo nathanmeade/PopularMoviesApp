@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.Navigation
+import com.bumptech.glide.Glide
 import com.meadetechnologies.popularmoviesapp.R
 import com.meadetechnologies.popularmoviesapp.data.model.Movie
 
@@ -36,12 +38,9 @@ class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<Movie
 
     class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Movie) = with(itemView) {
-            itemView.findViewById<TextView>(R.id.idTextView).text = item.id.toString()
-//            itemView.findViewById<TextView>(R.id.idTextView).setOnClickListener {  }
-//            itemView.findViewById<TextView>(R.id.idTextView).text = "test"
-            itemView.setOnClickListener {
-
-            }
+            //itemView.findViewById<TextView>(R.id.idTextView).text = item.id.toString()
+            Glide.with(itemView.context).load("https://image.tmdb.org/t/p/original" + item.poster_path).into(itemView.findViewById<ImageView>(R.id.imageView))
+//            itemView.findViewById<ImageView>(R.id.imageView).
         }
     }
 }
