@@ -28,8 +28,8 @@ class MovieAdapter(private val movies: List<Movie>) : RecyclerView.Adapter<Movie
 
     class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Movie) = with(itemView) {
-//            itemView.findViewById<TextView>(R.id.idTextView).text = item.id.toString()
-            itemView.findViewById<TextView>(R.id.idTextView).text = "test"
+            itemView.findViewById<TextView>(R.id.idTextView).text = item.id.toString()
+//            itemView.findViewById<TextView>(R.id.idTextView).text = "test"
         }
     }
 }

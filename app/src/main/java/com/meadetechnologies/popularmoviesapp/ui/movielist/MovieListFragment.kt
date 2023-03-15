@@ -47,13 +47,19 @@ class MovieListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val activity = requireActivity() as MainActivity
+        viewModel = activity.viewModel
         var adapter: MovieAdapter
         adapter = MovieAdapter(listOf(Movie(7), Movie(8)))
         adapter.notifyDataSetChanged()
-//        val myScope = CoroutineScope(Dispatchers.IO)
-//        myScope.launch {
+        val myScope = CoroutineScope(Dispatchers.IO)
+        myScope.launch {
 //            adapter = MovieAdapter(viewModel.getMovies())
-//        }
+////            adapter = MovieAdapter(listOf(Movie(67)))
+//            adapter.notifyDataSetChanged()
+//            binding.recyclerView.adapter = adapter
+//            binding.recyclerView.adapter?.notifyDataSetChanged()
+        }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         Log.d(TAG, "onViewCreated: ${adapter.itemCount}")

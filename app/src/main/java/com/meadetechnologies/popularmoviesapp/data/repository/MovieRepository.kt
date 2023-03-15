@@ -8,7 +8,9 @@ class MovieRepository(
     private val movieRemoteDataSource: MovieRemoteDataSource,
     private val movieLocalDataSource: MovieLocalDataSource
 ) {
-    fun getMovies() : List<Movie> {
-        return listOf(Movie(6))
+    suspend fun getMovies(apiKey: String) : List<Movie> {
+        //return movieLocalDataSource.getMovies()
+        return movieRemoteDataSource.getMovies(apiKey)
+//        return listOf(Movie(6))
     }
 }

@@ -9,11 +9,13 @@ import com.meadetechnologies.popularmoviesapp.data.remote.ApiService
 import com.meadetechnologies.popularmoviesapp.data.remote.MovieRemoteDataSourceImpl
 import com.meadetechnologies.popularmoviesapp.data.repository.MovieRepository
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainViewModel(application: Application) : ViewModel() {
 
     private val apiService = Retrofit.Builder()
-        .baseUrl("https://example.com/")
+        .baseUrl("https://api.themoviedb.org/3/movie/")
+        .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(ApiService::class.java)
 
@@ -26,7 +28,8 @@ class MainViewModel(application: Application) : ViewModel() {
 
     private val movieRepository = MovieRepository(remoteDataSource, localDataSource)
 
-    suspend fun getMovies(): List<Movie> {
-        return movieRepository.getMovies()
+    suspend fun getMovies(apiKey: String): List<Movie> {
+//        return listOf(Movie(76))
+        return movieRepository.getMovies(apiKey)
     }
 }
